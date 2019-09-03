@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
+        app:elevation="0dp"
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,8 +40,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="1px"
             android:layout_gravity="top"
-            android:background="@drawable/bg_shadow_top" />
+            android:background="@color/bg_divider_line" />
     </FrameLayout>
 </LinearLayout>

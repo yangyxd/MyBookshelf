@@ -20,7 +20,7 @@
         app:shadowShape="rectangle"
         app:shadowDx="0dp"
         app:shadowDy="3dp"
-        app:shadowRadius="10dp"
+        app:shadowRadius="8dp"
         app:shadowSide="all">
 
         <com.kunfei.bookshelf.widget.CoverImageView
@@ -67,7 +67,7 @@
         android:textColor="@color/tv_text_default"
         android:textSize="12sp"
         android:layout_marginTop="0dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginRight="4dp"
         app:layout_constraintTop_toBottomOf="@+id/iv_cover_bg" />
 
@@ -81,7 +81,7 @@
         android:textColor="@color/tv_text_default"
         android:textSize="8sp"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginRight="4dp"
         app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 

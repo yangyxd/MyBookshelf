@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
+        app:elevation="0dp"
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,6 +47,11 @@
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/bg_divider_line" />
 
     <RelativeLayout
         android:layout_width="match_parent"

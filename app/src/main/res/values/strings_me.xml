@@ -21,6 +21,8 @@
     <string name="custom_mr_t_l">左Tip</string>
     <string name="custom_mr_t_r">右Tip</string>
 
+    <string name="book_author">作者</string>
+
     <declare-styleable name="ATEStrokeTextView">
         <attr name="cornerRadius" format="dimension" />
     </declare-styleable>

@@ -66,8 +66,16 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
                     .placeholder(R.drawable.img_cover_default)
                     .into(myViewHolder.ivCover);
         }
-        myViewHolder.tvName.setText(String.format("%s (%s)", searchBooks.get(position).getName(), searchBooks.get(position).getAuthor()));
+        myViewHolder.tvName.setText(searchBooks.get(position).getName());
         BookKindBean bookKindBean = new BookKindBean(searchBooks.get(position).getKind());
+
+        String author = searchBooks.get(position).getAuthor();
+        if (isTrimEmpty(author))
+            myViewHolder.tvOwner.setVisibility(View.GONE);
+        else {
+            myViewHolder.tvOwner.setVisibility(View.VISIBLE);
+            myViewHolder.tvOwner.setText(author);
+        }
         if (isTrimEmpty(bookKindBean.getKind())) {
             myViewHolder.tvKind.setVisibility(View.GONE);
         } else {
@@ -210,6 +218,7 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
         ViewGroup flContent;
         CoverImageView ivCover;
         TextView tvName;
+        TextView tvOwner;
         TextView tvState;
         TextView tvWords;
         TextView tvKind;
@@ -223,6 +232,7 @@ public class SearchBookAdapter extends RefreshRecyclerViewAdapter {
             flContent = itemView.findViewById(R.id.fl_content);
             ivCover = itemView.findViewById(R.id.iv_cover);
             tvName = itemView.findViewById(R.id.tv_name);
+            tvOwner = itemView.findViewById(R.id.tv_owner);
             tvState = itemView.findViewById(R.id.tv_state);
             tvWords = itemView.findViewById(R.id.tv_words);
             tvLasted = itemView.findViewById(R.id.tv_lasted);
