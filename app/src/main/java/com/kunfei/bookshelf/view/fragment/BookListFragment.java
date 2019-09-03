@@ -176,7 +176,7 @@ public class BookListFragment extends MBaseFragment<BookListContract.Presenter> 
         return new OnItemClickListenerTwo() {
             @Override
             public void onClick(View view, int index) {
-                toast("onclick");
+                //toast("onclick");
                 if (actionBar.getVisibility() == View.VISIBLE) {
                     upSelectCount();
                     return;
@@ -193,7 +193,7 @@ public class BookListFragment extends MBaseFragment<BookListContract.Presenter> 
 
             @Override
             public void onLongClick(View view, int index) {
-                toast("onLongClick");
+                //toast("onLongClick");
                 BookShelfBean bookShelfBean = bookShelfAdapter.getBooks().get(index);
                 String key = String.valueOf(System.currentTimeMillis());
                 BitIntentDataManager.getInstance().putData(key, bookShelfBean.clone());
