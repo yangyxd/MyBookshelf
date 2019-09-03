@@ -62,7 +62,7 @@
                     android:gravity="right"
                     android:lines="1"
                     android:layout_marginRight="8dp"
-                    android:textColor="@color/tv_text_secondary"
+                    android:textColor="@color/tv_text_summary"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                     android:layout_marginLeft="5dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:textColor="@color/tv_text_default"
+                    android:textColor="@color/tv_text_summary"
                     android:textSize="12sp" />
             </LinearLayout>
 

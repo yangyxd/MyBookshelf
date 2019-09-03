@@ -56,8 +56,12 @@ import static com.kunfei.bookshelf.presenter.BookDetailPresenter.FROM_BOOKSHELF;
 public class BookDetailActivity extends MBaseActivity<BookDetailContract.Presenter> implements BookDetailContract.View {
     @BindView(R.id.ifl_content)
     View vwContent;
-    @BindView(R.id.iv_menu)
-    ImageView ivMenu;
+    @BindView(R.id.tv_refresh)
+    TextView tvRefresh;
+    @BindView(R.id.tv_disable_update)
+    TextView tvDisableUpdate;
+    @BindView(R.id.tv_edit_origin)
+    TextView tvEditOrigin;
     @BindView(R.id.iv_blur_cover)
     AppCompatImageView ivBlurCover;
     @BindView(R.id.iv_cover)
@@ -86,6 +90,8 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
     RadioGroup rgBookGroup;
     @BindView(R.id.tv_chapter_size)
     TextView tvChapterSize;
+//    @BindView(R.id.tv_read_chapter)
+//    TextView tvReadChapter;
 
     private MoDialogHUD moDialogHUD;
     private String author;
@@ -140,6 +146,7 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
             String origin = TextUtils.isEmpty(searchBookBean.getOrigin()) ? "未知" : searchBookBean.getOrigin();
             tvOrigin.setText(origin);
             tvChapter.setText(searchBookBean.getLastChapter());  // newest
+            // tvReadChapter.setText(searchBookBean..getDurChapterName());
             tvIntro.setText(StringUtils.formatHtml(searchBookBean.getIntroduce()));
             tvShelf.setText(R.string.add_to_shelf);
             tvRead.setText(R.string.start_read);
@@ -159,9 +166,13 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
         BookInfoBean bookInfoBean;
         if (null != bookShelfBean) {
             if (BookShelfBean.LOCAL_TAG.equals(bookShelfBean.getTag())) {
-                ivMenu.setVisibility(View.GONE);
+                tvRefresh.setVisibility(View.GONE);
+                tvEditOrigin.setVisibility(View.GONE);
+                tvDisableUpdate.setVisibility(View.GONE);
             } else {
-                ivMenu.setVisibility(View.VISIBLE);
+                tvRefresh.setVisibility(View.VISIBLE);
+                tvEditOrigin.setVisibility(View.VISIBLE);
+                tvDisableUpdate.setVisibility(View.VISIBLE);
             }
             bookInfoBean = bookShelfBean.getBookInfoBean();
             tvName.setText(bookInfoBean.getName());
@@ -327,45 +338,46 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
             }
         });
 
-        ivMenu.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(this, view, Gravity.END);
-            if (!mPresenter.getBookShelf().getTag().equals(BookShelfBean.LOCAL_TAG)) {
-                popupMenu.getMenu().add(Menu.NONE, R.id.menu_refresh, Menu.NONE, R.string.refresh);
-            }
-            if (mPresenter.getInBookShelf() && !mPresenter.getBookShelf().getTag().equals(BookShelfBean.LOCAL_TAG)) {
-                if (mPresenter.getBookShelf().getAllowUpdate()) {
-                    popupMenu.getMenu().add(Menu.NONE, R.id.menu_disable_update, Menu.NONE, R.string.disable_update);
-                } else {
-                    popupMenu.getMenu().add(Menu.NONE, R.id.menu_allow_update, Menu.NONE, R.string.allow_update);
-                }
-            }
-            if (!mPresenter.getBookShelf().getTag().equals(BookShelfBean.LOCAL_TAG)) {
-                popupMenu.getMenu().add(Menu.NONE, R.id.menu_edit, Menu.NONE, R.string.edit_book_source);
-            }
-            popupMenu.setOnMenuItemClickListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_refresh:
-                        refresh();
-                        break;
-                    case R.id.menu_allow_update:
-                        mPresenter.getBookShelf().setAllowUpdate(true);
-                        mPresenter.addToBookShelf();
-                        break;
-                    case R.id.menu_disable_update:
-                        mPresenter.getBookShelf().setAllowUpdate(false);
-                        mPresenter.addToBookShelf();
-                        break;
-                    case R.id.menu_edit:
-                        BookSourceBean sourceBean = BookSourceManager.getBookSourceByUrl(mPresenter.getBookShelf().getTag());
-                        if (sourceBean != null) {
-                            SourceEditActivity.startThis(this, sourceBean);
-                        }
-                        break;
-                }
-                return true;
+        if (!mPresenter.getBookShelf().getTag().equals(BookShelfBean.LOCAL_TAG)) {
+            tvRefresh.setVisibility(View.VISIBLE);
+            tvRefresh.setOnClickListener(v -> {
+                refresh();
             });
-            popupMenu.show();
-        });
+        } else {
+            tvRefresh.setVisibility(View.GONE);
+        }
+
+        if (mPresenter.getInBookShelf() && !mPresenter.getBookShelf().getTag().equals(BookShelfBean.LOCAL_TAG)) {
+            tvDisableUpdate.setVisibility(View.VISIBLE);
+            tvDisableUpdate.setOnClickListener(v -> {
+                mPresenter.getBookShelf().setAllowUpdate(!mPresenter.getBookShelf().getAllowUpdate());
+                mPresenter.addToBookShelf();
+                if (mPresenter.getBookShelf().getAllowUpdate()) {
+                    tvDisableUpdate.setText(getString(R.string.disable_update));
+                } else {
+                    tvDisableUpdate.setText(getString(R.string.allow_update));
+                }
+            });
+            if (mPresenter.getBookShelf().getAllowUpdate()) {
+                tvDisableUpdate.setText(getString(R.string.disable_update));
+            } else {
+                tvDisableUpdate.setText(getString(R.string.allow_update));
+            }
+        } else {
+            tvDisableUpdate.setVisibility(View.GONE);
+        }
+
+        if (!mPresenter.getBookShelf().getTag().equals(BookShelfBean.LOCAL_TAG)) {
+            tvEditOrigin.setVisibility(View.VISIBLE);
+            tvEditOrigin.setOnClickListener(v -> {
+                BookSourceBean sourceBean = BookSourceManager.getBookSourceByUrl(mPresenter.getBookShelf().getTag());
+                if (sourceBean != null) {
+                    SourceEditActivity.startThis(this, sourceBean);
+                }
+            });
+        } else {
+            tvEditOrigin.setVisibility(View.GONE);
+        }
 
         ivCover.setOnClickListener(view -> {
             if (mPresenter.getOpenFrom() == FROM_BOOKSHELF) {

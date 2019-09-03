@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#77000000"
     android:clickable="true"
-    android:fillViewport="true"
-    android:fitsSystemWindows="true"
-    android:focusable="true">
+    >
 
     <LinearLayout
         android:id="@+id/ifl_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <Space
@@ -23,11 +21,14 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="30dp"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="10dp">
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="12dp">
 
             <com.kunfei.bookshelf.widget.FilletImageView
                 android:id="@+id/iv_blur_cover"
@@ -37,73 +38,176 @@
                 android:src="@drawable/img_cover_gs"
                 tools:ignore="ContentDescription" />
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#88000000"
                 android:orientation="vertical">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp">
+
+                    <com.kunfei.bookshelf.widget.ArcView
+                        app:arcHeight="36dp"
+                        app:bgColor="@color/background_popup"
+                        app:arcDirectionTop="true"
+                        android:layout_marginTop="100dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp" />
+
+                    <androidx.cardview.widget.CardView
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="8dp"
+                        android:layout_margin="3dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.kunfei.bookshelf.widget.CoverImageView
+                            android:id="@+id/iv_cover"
+                            android:layout_width="92dp"
+                            android:layout_height="130dp"
+                            android:contentDescription="@string/img_cover"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_cover_default" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </RelativeLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:background="@color/background_popup"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="3dp">
 
-                    <com.kunfei.bookshelf.widget.CoverImageView
-                        android:id="@+id/iv_cover"
-                        android:layout_width="92dp"
-                        android:layout_height="130dp"
-                        android:layout_margin="3dp"
-                        android:contentDescription="@string/img_cover"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/img_cover_default" />
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingLeft="10dp"
-                        android:paddingTop="3dp"
-                        android:paddingRight="10dp"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:singleLine="true"
+                        android:text="@string/book_name"
+                        android:textColor="@color/tv_text_default"
+                        android:textSize="18sp"
+                        tools:ignore="RtlHardcoded" />
+
+                    <RadioGroup
+                        android:id="@+id/rg_book_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
                         android:paddingBottom="3dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            android:id="@+id/rb_zg"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="3dp"
-                            android:paddingBottom="3dp"
-                            tools:ignore="UseCompoundDrawables">
+                            android:layout_marginRight="4dp"
+                            android:button="@null"
+                            android:checked="true"
+                            android:includeFontPadding="false"
+                            android:paddingStart="4dp"
+                            android:paddingTop="1dp"
+                            android:paddingEnd="4dp"
+                            android:paddingBottom="1dp"
+                            android:singleLine="true"
+                            android:text="@string/pursue_more"
+                            android:textColor="@color/tv_text_secondary"
+                            android:textSize="13sp"
+                            tools:ignore="RtlHardcoded" />
 
-                            <TextView
-                                android:id="@+id/tv_name"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:gravity="center|start"
-                                android:includeFontPadding="false"
-                                android:singleLine="true"
-                                android:text="@string/book_name"
-                                android:textColor="@color/white"
-                                android:textSize="16sp"
-                                tools:ignore="RtlHardcoded" />
+                        <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            android:id="@+id/rb_yf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:button="@null"
+                            android:includeFontPadding="false"
+                            android:paddingStart="4dp"
+                            android:paddingTop="1dp"
+                            android:paddingEnd="4dp"
+                            android:paddingBottom="1dp"
+                            android:singleLine="true"
+                            android:text="@string/fattening"
+                            android:textColor="@color/tv_text_secondary"
+                            android:textSize="13sp"
+                            tools:ignore="RtlHardcoded" />
 
-                            <ImageView
-                                android:id="@+id/iv_menu"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:contentDescription="@string/menu"
-                                android:src="@drawable/ic_more_vert"
-                                app:tint="@android:color/white" />
+                        <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            android:id="@+id/rb_wj"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:button="@null"
+                            android:includeFontPadding="false"
+                            android:paddingStart="4dp"
+                            android:paddingTop="1dp"
+                            android:paddingEnd="4dp"
+                            android:paddingBottom="1dp"
+                            android:singleLine="true"
+                            android:text="@string/finish"
+                            android:textColor="@color/tv_text_secondary"
+                            android:textSize="13sp"
+                            tools:ignore="RtlHardcoded" />
 
-                        </LinearLayout>
+                        <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            android:id="@+id/rb_bd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:button="@null"
+                            android:includeFontPadding="false"
+                            android:paddingStart="4dp"
+                            android:paddingTop="1dp"
+                            android:paddingEnd="4dp"
+                            android:paddingBottom="1dp"
+                            android:singleLine="true"
+                            android:text="@string/local"
+                            android:textColor="@color/tv_text_secondary"
+                            android:textSize="13sp" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+                <ScrollView
+                    android:background="@color/background_popup"
+                    android:layout_weight="1.0"
+                    android:gravity="start"
+                    android:layout_height="0dp"
+                    android:layout_width="match_parent"
+                    android:scrollbarStyle="outsideInset"
+                    android:scrollbars="vertical"
+                    android:fillViewport="true"
+                    android:fitsSystemWindows="true"
+                    android:focusable="true" >
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="8dp"
+                        android:background="@color/background_popup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
-                            android:paddingTop="3dp"
                             android:paddingBottom="3dp">
 
                             <ImageView
@@ -112,7 +216,7 @@
                                 android:contentDescription="@string/author"
                                 android:paddingRight="2dp"
                                 android:src="@drawable/ic_author"
-                                app:tint="@color/tv_text_book_detail"
+                                app:tint="@color/tv_text_summary"
                                 tools:ignore="RtlHardcoded,RtlSymmetry" />
 
                             <TextView
@@ -125,15 +229,22 @@
                                 android:paddingRight="6dp"
                                 android:singleLine="true"
                                 android:text="@string/author"
-                                android:textColor="@color/tv_text_book_detail"
+                                android:textColor="@color/tv_text_summary"
                                 android:textSize="13sp"
                                 tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:background="@color/transparent" />
+                            <com.kunfei.bookshelf.widget.views.ATEAccentBgTextView
+                                android:id="@+id/tv_disable_update"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:paddingStart="4dp"
+                                android:paddingTop="1dp"
+                                android:paddingEnd="4dp"
+                                android:paddingBottom="1dp"
+                                android:singleLine="true"
+                                android:text="@string/disable_update"
+                                android:textSize="13sp" />
 
                         </LinearLayout>
 
@@ -152,7 +263,7 @@
                                 android:contentDescription="@string/origin"
                                 android:paddingRight="2dp"
                                 android:src="@drawable/ic_web_outline"
-                                app:tint="@color/tv_text_book_detail"
+                                app:tint="@color/tv_text_summary"
                                 tools:ignore="RtlHardcoded,RtlSymmetry" />
 
                             <TextView
@@ -165,9 +276,23 @@
                                 android:paddingRight="6dp"
                                 android:singleLine="true"
                                 android:text="@string/origin"
-                                android:textColor="@color/tv_text_book_detail"
+                                android:textColor="@color/tv_text_summary"
                                 android:textSize="13sp"
                                 tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                            <com.kunfei.bookshelf.widget.views.ATEAccentBgTextView
+                                android:id="@+id/tv_edit_origin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:paddingStart="4dp"
+                                android:paddingTop="1dp"
+                                android:paddingEnd="4dp"
+                                android:paddingBottom="1dp"
+                                android:layout_marginRight="4dp"
+                                android:singleLine="true"
+                                android:text="@string/edit"
+                                android:textSize="13sp" />
 
                             <com.kunfei.bookshelf.widget.views.ATEAccentBgTextView
                                 android:id="@+id/tv_change_origin"
@@ -199,7 +324,7 @@
                                 android:contentDescription="@string/last_read"
                                 android:paddingRight="2dp"
                                 android:src="@drawable/ic_book_last"
-                                app:tint="@color/tv_text_book_detail"
+                                app:tint="@color/tv_text_summary"
                                 tools:ignore="RtlHardcoded,RtlSymmetry" />
 
                             <TextView
@@ -213,7 +338,7 @@
                                 android:paddingBottom="3dp"
                                 android:singleLine="true"
                                 android:text="@string/read_dur_progress"
-                                android:textColor="@color/tv_text_book_detail"
+                                android:textColor="@color/tv_text_summary"
                                 android:textSize="13sp" />
 
                             <TextView
@@ -223,115 +348,74 @@
                                 android:singleLine="true"
                                 android:textColor="@color/tv_text_book_detail"
                                 android:textSize="13sp" />
+
+                            <com.kunfei.bookshelf.widget.views.ATEAccentBgTextView
+                                android:id="@+id/tv_refresh"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:paddingStart="4dp"
+                                android:paddingTop="1dp"
+                                android:paddingEnd="4dp"
+                                android:paddingBottom="1dp"
+                                android:singleLine="true"
+                                android:text="@string/reload"
+                                android:textSize="13sp" />
                         </LinearLayout>
 
-                        <RadioGroup
-                            android:id="@+id/rg_book_group"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal"
+                            android:visibility="gone"
                             android:paddingTop="3dp"
                             android:paddingBottom="3dp">
 
-                            <com.kunfei.bookshelf.widget.views.ATERadioNoButton
-                                android:id="@+id/rb_zg"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="4dp"
-                                android:button="@null"
-                                android:checked="true"
-                                android:includeFontPadding="false"
-                                android:paddingStart="4dp"
-                                android:paddingTop="1dp"
-                                android:paddingEnd="4dp"
-                                android:paddingBottom="1dp"
-                                android:singleLine="true"
-                                android:text="@string/pursue_more"
-                                android:textColor="@color/white"
-                                android:textSize="13sp"
-                                tools:ignore="RtlHardcoded" />
+                            <ImageView
+                                android:id="@+id/iv_read"
+                                android:layout_width="18sp"
+                                android:layout_height="18sp"
+                                android:contentDescription="@string/last_read"
+                                android:paddingRight="2dp"
+                                android:src="@drawable/ic_history"
+                                app:tint="@color/tv_text_summary"
+                                tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-                            <com.kunfei.bookshelf.widget.views.ATERadioNoButton
-                                android:id="@+id/rb_yf"
-                                android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/tv_read_chapter"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="4dp"
-                                android:button="@null"
+                                android:layout_weight="1"
+                                android:ellipsize="end"
                                 android:includeFontPadding="false"
-                                android:paddingStart="4dp"
-                                android:paddingTop="1dp"
-                                android:paddingEnd="4dp"
-                                android:paddingBottom="1dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
                                 android:singleLine="true"
-                                android:text="@string/fattening"
-                                android:textColor="@color/white"
-                                android:textSize="13sp"
-                                tools:ignore="RtlHardcoded" />
-
-                            <com.kunfei.bookshelf.widget.views.ATERadioNoButton
-                                android:id="@+id/rb_wj"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="4dp"
-                                android:button="@null"
-                                android:includeFontPadding="false"
-                                android:paddingStart="4dp"
-                                android:paddingTop="1dp"
-                                android:paddingEnd="4dp"
-                                android:paddingBottom="1dp"
-                                android:singleLine="true"
-                                android:text="@string/finish"
-                                android:textColor="@color/white"
-                                android:textSize="13sp"
-                                tools:ignore="RtlHardcoded" />
-
-                            <com.kunfei.bookshelf.widget.views.ATERadioNoButton
-                                android:id="@+id/rb_bd"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:button="@null"
-                                android:includeFontPadding="false"
-                                android:paddingStart="4dp"
-                                android:paddingTop="1dp"
-                                android:paddingEnd="4dp"
-                                android:paddingBottom="1dp"
-                                android:singleLine="true"
-                                android:text="@string/local"
-                                android:textColor="@color/white"
+                                android:text="@string/read_dur_progress"
+                                android:textColor="@color/tv_text_summary"
                                 android:textSize="13sp" />
+                        </LinearLayout>
 
-                        </RadioGroup>
+                        <com.kunfei.bookshelf.widget.ScrollTextView
+                            android:id="@+id/tv_intro"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="@string/book_intro"
+                            android:textColor="@color/tv_text_secondary"
+                            android:textSize="15sp"
+                            android:visibility="invisible" />
 
                     </LinearLayout>
-                </LinearLayout>
+
+                </ScrollView>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/btn_bg_press" />
-
-                <com.kunfei.bookshelf.widget.ScrollTextView
-                    android:id="@+id/tv_intro"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@color/background_menu"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="5dp"
-                    android:scrollbarStyle="outsideInset"
-                    android:scrollbars="vertical"
-                    android:text="@string/book_intro"
-                    android:textColor="@color/tv_text_default"
-                    android:textSize="15sp"
-                    android:visibility="invisible" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
+                    android:layout_height="1px"
                     android:background="@color/btn_bg_press" />
 
                 <FrameLayout
@@ -342,8 +426,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/background_menu"
-                        android:orientation="horizontal"
-                        android:padding="3dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/tv_shelf"
@@ -359,16 +442,12 @@
                             android:textColor="@color/tv_text_default"
                             android:textSize="15sp" />
 
-                        <Space
-                            android:layout_width="3dp"
-                            android:layout_height="match_parent" />
-
                         <TextView
                             android:id="@+id/tv_read"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/selector_fillet_btn_bg"
+                            android:background="@drawable/selector_common_bg"
                             android:clickable="true"
                             android:focusable="true"
                             android:gravity="center"
@@ -402,4 +481,4 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>

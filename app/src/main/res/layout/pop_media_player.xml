@@ -32,13 +32,13 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_cover"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/img_cover"
                 android:src="@drawable/img_cover_default"
-                app:civ_border_color="@color/tv_text_default"
-                app:civ_border_width="1dp"
+                app:civ_border_color="@color/tv_text_secondary"
+                app:civ_border_width="8dp"
                 tools:ignore="HardcodedText" />
 
         </FrameLayout>

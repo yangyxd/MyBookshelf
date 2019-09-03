@@ -22,9 +22,16 @@
     <string name="custom_mr_t_r">右Tip</string>
 
     <string name="book_author">作者</string>
+    <string name="reload">刷新</string>
 
     <declare-styleable name="ATEStrokeTextView">
         <attr name="cornerRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ArcView">
+        <attr name="arcHeight" format="dimension" />
+        <attr name="bgColor" format="color" />
+        <attr name="arcDirectionTop" format="boolean" />
     </declare-styleable>
 
     <dimen name="adjust_margin_left">55dp</dimen>

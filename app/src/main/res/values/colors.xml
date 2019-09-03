@@ -9,6 +9,7 @@
     <color name="background">@color/md_grey_100</color>
     <color name="background_card">#dedede</color>
     <color name="background_menu">#fcfcfc</color>
+    <color name="background_popup">#fefefe</color>
     <color name="transparent">#00000000</color>
 
     <color name="transparent30">#30000000</color>
