@@ -133,11 +133,27 @@ public class FindBookFragment extends MBaseFragment<FindBookContract.Presenter> 
     public void upStyle() {
         if (rlEmptyView == null) return;
         initRecyclerView();
+
+        // 过滤处理
+        List<RecyclerViewData> datas = null;
+        int filter = MApplication.getInstance().getFindFilter();
+        if (filter == 0)
+            datas = data;
+        else if (data != null) {
+            datas = new ArrayList<RecyclerViewData>();
+            for (int i=0; i<data.size(); i++) {
+                RecyclerViewData item = data.get(i);
+                boolean isAduio = ((FindKindGroupBean) item.getGroupData()).isAudio();
+                if ((filter == 1 && !isAduio) || (filter == 2 && isAduio))
+                    datas.add(item);
+            }
+        }
+
         if (isFlexBox()) {
-            findRightAdapter.setData(data);
-            findLeftAdapter.setData(data);
+            findRightAdapter.setData(datas);
+            findLeftAdapter.setData(datas);
         } else {
-            findKindAdapter.setAllDatas(data);
+            findKindAdapter.setAllDatas(datas);
         }
         upUI();
     }

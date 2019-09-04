@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -22,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -59,6 +61,7 @@ import com.kunfei.bookshelf.view.fragment.FindBookFragment;
 import com.kunfei.bookshelf.widget.modialog.InputDialog;
 import com.kunfei.bookshelf.widget.modialog.MoDialogHUD;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -284,15 +287,25 @@ public class MainActivity extends BaseTabActivity<MainContract.Presenter> implem
     private void showFindMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(this, view);
         popupMenu.getMenu().add(0, 0, 0, getString(R.string.switch_display_style));
-        popupMenu.getMenu().add(0, 0, 1, getString(R.string.clear_find_cache));
+        popupMenu.getMenu().add(0, 1, 1, getString(R.string.clear_find_cache));
+
         boolean findTypeIsFlexBox = preferences.getBoolean("findTypeIsFlexBox", true);
         boolean showFindLeftView = preferences.getBoolean("showFindLeftView", true);
+        int findFilter = MApplication.getInstance().getFindFilter();
+
         if (findTypeIsFlexBox) {
-            popupMenu.getMenu().add(0, 0, 2, showFindLeftView ? "隐藏左侧栏" : "显示左侧栏");
+            popupMenu.getMenu().add(0, 2, 2, showFindLeftView ? "隐藏左侧栏" : "显示左侧栏");
         }
+
+        // 书源过滤
+        SubMenu sm = popupMenu.getMenu().addSubMenu(1, 3, 3, getString(R.string.menu_src_filter));
+        sm.add(1, 10, 0, getString(R.string.menu_src_all)).setChecked(findFilter == 0).setCheckable(true);
+        sm.add(1, 11, 1, getString(R.string.menu_src_text)).setChecked(findFilter == 1).setCheckable(true);
+        sm.add(1, 12, 2, getString(R.string.menu_src_audio)).setChecked(findFilter == 2).setCheckable(true);
+
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             FindBookFragment findBookFragment = getFindFragment();
-            switch (menuItem.getOrder()) {
+            switch (menuItem.getItemId()) {
                 case 0:
                     preferences.edit()
                             .putBoolean("findTypeIsFlexBox", !findTypeIsFlexBox)
@@ -313,6 +326,24 @@ public class MainActivity extends BaseTabActivity<MainContract.Presenter> implem
                             .apply();
                     if (findBookFragment != null) {
                         findBookFragment.upUI();
+                    }
+                    break;
+                case 10:
+                    MApplication.getInstance().setFindFilter(0);
+                    if (findBookFragment != null) {
+                        findBookFragment.upStyle();
+                    }
+                    break;
+                case 11:
+                    MApplication.getInstance().setFindFilter(1);
+                    if (findBookFragment != null) {
+                        findBookFragment.upStyle();
+                    }
+                    break;
+                case 12:
+                    MApplication.getInstance().setFindFilter(2);
+                    if (findBookFragment != null) {
+                        findBookFragment.upStyle();
                     }
                     break;
             }

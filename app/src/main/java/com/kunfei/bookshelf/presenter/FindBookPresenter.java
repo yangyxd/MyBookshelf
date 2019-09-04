@@ -77,6 +77,7 @@ public class FindBookPresenter extends BasePresenterImpl<FindBookContract.View> 
                         FindKindGroupBean groupBean = new FindKindGroupBean();
                         groupBean.setGroupName(sourceBean.getBookSourceName());
                         groupBean.setGroupTag(sourceBean.getBookSourceUrl());
+                        groupBean.setGroupBookType(sourceBean.getBookSourceType());
                         group.add(new RecyclerViewData(groupBean, children, false));
                         if (isJsAndCache) {
                             aCache.put(sourceBean.getBookSourceUrl(), findRule);

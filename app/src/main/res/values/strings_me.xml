@@ -24,6 +24,12 @@
     <string name="book_author">作者</string>
     <string name="reload">刷新</string>
 
+    <string name="menu_src_filter">筛选书源</string>
+    <string name="menu_src_all">所有源</string>
+    <string name="menu_src_text">文本源</string>
+    <string name="menu_src_audio">音频源</string>
+
+
     <declare-styleable name="ATEStrokeTextView">
         <attr name="cornerRadius" format="dimension" />
     </declare-styleable>

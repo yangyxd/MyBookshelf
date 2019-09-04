@@ -42,6 +42,7 @@ public class MApplication extends Application {
     private static int versionCode;
     private SharedPreferences configPreferences;
     private boolean donateHb;
+    private int findFilter = 0;
 
     public static MApplication getInstance() {
         return instance;
@@ -168,6 +169,18 @@ public class MApplication extends Application {
 
     public void upEInkMode() {
         MApplication.isEInkMode = configPreferences.getBoolean("E-InkMode", false);
+    }
+
+    /**
+     * 发现过滤方式：0 全部，1 文本，2 音频
+     * @return
+     */
+    public int getFindFilter() {
+        return findFilter;
+    }
+
+    public void setFindFilter(int value) {
+        findFilter = value;
     }
 
     /**
