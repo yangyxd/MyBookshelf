@@ -1,5 +1,5 @@
 <resources>
-    <string name="welcomemsg">~*喵*~ 专属版</string>
+    <string name="welcomemsg"></string>
     <string name="default_source">默认书源</string>
     <string name="import_by_default">默认书源导入</string>
     <string name="no_default_source">没有可用的默认书源</string>

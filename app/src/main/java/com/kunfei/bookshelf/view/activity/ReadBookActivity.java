@@ -1657,6 +1657,8 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                     return true;
                 } else if (ReadAloudService.running && aloudStatus == ReadAloudService.Status.PLAY) {
                     ReadAloudService.pause(this);
+                    if (mediaPlayerPop != null)
+                        mediaPlayerPop.pauseAnimation();
                     if (!mPresenter.getBookShelf().isAudio()) {
                         toast(R.string.read_aloud_pause);
                     }
