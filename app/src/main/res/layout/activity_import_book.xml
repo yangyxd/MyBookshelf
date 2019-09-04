@@ -54,7 +54,7 @@
             android:text="@string/select_all"
             android:textColor="@color/tv_text_default" />
 
-        <com.kunfei.bookshelf.widget.views.ATEAccentStrokeTextView
+        <com.kunfei.bookshelf.widget.views.ATEAccentBgTextView
             android:id="@+id/file_system_btn_add_book"
             android:layout_width="wrap_content"
             android:layout_height="35dp"

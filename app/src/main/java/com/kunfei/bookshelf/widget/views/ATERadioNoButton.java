@@ -1,11 +1,13 @@
 package com.kunfei.bookshelf.widget.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatRadioButton;
 
+import com.kunfei.bookshelf.R;
 import com.kunfei.bookshelf.utils.ScreenUtils;
 import com.kunfei.bookshelf.utils.Selector;
 import com.kunfei.bookshelf.utils.theme.ThemeStore;
@@ -31,12 +33,14 @@ public class ATERadioNoButton extends AppCompatRadioButton {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ATERadioNoButton);
+
         setBackground(Selector.shapeBuild()
                 .setCornerRadius(ScreenUtils.dpToPx(3))
                 .setStrokeWidth(ScreenUtils.dpToPx(1))
                 .setCheckedBgColor(ThemeStore.accentColor(context))
-                .setCheckedStrokeColor(ThemeStore.accentColor(context))
-                .setDefaultStrokeColor(Color.WHITE)
+                .setCheckedStrokeColor(a.getColor(R.styleable.ATERadioNoButton_checkedStrokeColor, ThemeStore.accentColor(context)))
+                .setDefaultStrokeColor(a.getColor(R.styleable.ATERadioNoButton_strokeColor, Color.WHITE))
                 .create());
     }
 }

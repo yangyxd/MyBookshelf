@@ -30,16 +30,29 @@
                 android:contentDescription="@string/img_cover"
                 android:src="@drawable/img_cover_default" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/iv_cover"
-                android:layout_width="220dp"
-                android:layout_height="220dp"
+            <androidx.cardview.widget.CardView
+                app:cardBackgroundColor="@color/ate_control_disabled_light"
+                app:cardElevation="24dp"
+                app:cardCornerRadius="115dp"
+                app:contentPadding="2dp"
                 android:layout_gravity="center"
-                android:contentDescription="@string/img_cover"
-                android:src="@drawable/img_cover_default"
-                app:civ_border_color="@color/tv_text_secondary"
-                app:civ_border_width="8dp"
-                tools:ignore="HardcodedText" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_cover"
+                    android:layout_width="230dp"
+                    android:layout_height="230dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/img_cover"
+                    android:src="@drawable/img_cover_default"
+                    app:civ_border_color="@color/ate_control_disabled_light"
+                    app:civ_border_width="1px"
+                    android:transformPivotX="115dp"
+                    android:transformPivotY="115dp"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.cardview.widget.CardView>
 
         </FrameLayout>
 

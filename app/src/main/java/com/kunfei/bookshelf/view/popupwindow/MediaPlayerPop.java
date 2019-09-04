@@ -10,6 +10,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -38,6 +41,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.animation.Animation.RELATIVE_TO_SELF;
+
 public class MediaPlayerPop extends FrameLayout {
     @SuppressLint("ConstantLocale")
     private final DateFormat timeFormat = new SimpleDateFormat("mm:ss", Locale.getDefault());
@@ -65,6 +70,7 @@ public class MediaPlayerPop extends FrameLayout {
     @BindView(R.id.iv_cover_bg)
     ImageView ivCoverBg;
 
+    private Animation animation;
     private int primaryTextColor;
     private Callback callback;
 
@@ -118,6 +124,21 @@ public class MediaPlayerPop extends FrameLayout {
                 }
             }
         });
+
+        animation = new RotateAnimation(0, 360, RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(8000);//设定转一圈的时间
+        animation.setRepeatCount(Animation.INFINITE);//设定无限循环
+        animation.setRepeatMode(Animation.RESTART);//
+        animation.setInterpolator(new LinearInterpolator());
+    }
+
+    public void startAnimation() {
+        animation.reset();
+        ivCover.startAnimation(animation);
+    }
+
+    public void pauseAnimation() {
+        animation.cancel();
     }
 
     private void setColor(Drawable drawable) {

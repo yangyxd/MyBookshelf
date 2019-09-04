@@ -1,4 +1,5 @@
 <resources>
+    <string name="welcomemsg">~*喵*~ 专属版</string>
     <string name="default_source">默认书源</string>
     <string name="import_by_default">默认书源导入</string>
     <string name="no_default_source">没有可用的默认书源</string>
@@ -30,14 +31,26 @@
     <string name="menu_src_audio">音频源</string>
 
 
+    <attr name="cornerRadius" format="dimension" />
+
     <declare-styleable name="ATEStrokeTextView">
-        <attr name="cornerRadius" format="dimension" />
+        <attr name="cornerRadius" />
+    </declare-styleable>
+
+    <declare-styleable name="ATEAccentBgTextView">
+        <attr name="textColor" format="color" />
+        <attr name="cornerRadius" />
     </declare-styleable>
 
     <declare-styleable name="ArcView">
         <attr name="arcHeight" format="dimension" />
         <attr name="bgColor" format="color" />
         <attr name="arcDirectionTop" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ATERadioNoButton">
+        <attr name="strokeColor" format="color" />
+        <attr name="checkedStrokeColor" format="color" />
     </declare-styleable>
 
     <dimen name="adjust_margin_left">55dp</dimen>

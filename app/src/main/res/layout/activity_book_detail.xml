@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#77000000"
-    android:clickable="true"
-    >
+    android:clickable="true">
 
     <LinearLayout
         android:id="@+id/ifl_content"
@@ -49,15 +48,15 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp">
+                    android:layout_marginTop="24dp">
 
                     <com.kunfei.bookshelf.widget.ArcView
                         app:arcHeight="36dp"
                         app:bgColor="@color/background_popup"
                         app:arcDirectionTop="true"
-                        android:layout_marginTop="100dp"
+                        android:layout_marginTop="90dp"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="48dp" />
 
                     <androidx.cardview.widget.CardView
                         app:cardCornerRadius="5dp"
@@ -112,6 +111,7 @@
                         android:paddingBottom="3dp">
 
                         <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            app:strokeColor="@color/tv_text_summary"
                             android:id="@+id/rb_zg"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -120,16 +120,17 @@
                             android:checked="true"
                             android:includeFontPadding="false"
                             android:paddingStart="4dp"
-                            android:paddingTop="1dp"
+                            android:paddingTop="2dp"
                             android:paddingEnd="4dp"
-                            android:paddingBottom="1dp"
+                            android:paddingBottom="2dp"
                             android:singleLine="true"
                             android:text="@string/pursue_more"
-                            android:textColor="@color/tv_text_secondary"
+                            android:textColor="@drawable/selector_radio_txt_color"
                             android:textSize="13sp"
                             tools:ignore="RtlHardcoded" />
 
                         <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            app:strokeColor="@color/tv_text_summary"
                             android:id="@+id/rb_yf"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -137,16 +138,17 @@
                             android:button="@null"
                             android:includeFontPadding="false"
                             android:paddingStart="4dp"
-                            android:paddingTop="1dp"
+                            android:paddingTop="2dp"
                             android:paddingEnd="4dp"
-                            android:paddingBottom="1dp"
+                            android:paddingBottom="2dp"
                             android:singleLine="true"
                             android:text="@string/fattening"
-                            android:textColor="@color/tv_text_secondary"
+                            android:textColor="@drawable/selector_radio_txt_color"
                             android:textSize="13sp"
                             tools:ignore="RtlHardcoded" />
 
                         <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            app:strokeColor="@color/tv_text_summary"
                             android:id="@+id/rb_wj"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -154,28 +156,29 @@
                             android:button="@null"
                             android:includeFontPadding="false"
                             android:paddingStart="4dp"
-                            android:paddingTop="1dp"
+                            android:paddingTop="2dp"
                             android:paddingEnd="4dp"
-                            android:paddingBottom="1dp"
+                            android:paddingBottom="2dp"
                             android:singleLine="true"
                             android:text="@string/finish"
-                            android:textColor="@color/tv_text_secondary"
+                            android:textColor="@drawable/selector_radio_txt_color"
                             android:textSize="13sp"
                             tools:ignore="RtlHardcoded" />
 
                         <com.kunfei.bookshelf.widget.views.ATERadioNoButton
+                            app:strokeColor="@color/tv_text_summary"
                             android:id="@+id/rb_bd"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:button="@null"
                             android:includeFontPadding="false"
                             android:paddingStart="4dp"
-                            android:paddingTop="1dp"
+                            android:paddingTop="2dp"
                             android:paddingEnd="4dp"
-                            android:paddingBottom="1dp"
+                            android:paddingBottom="2dp"
                             android:singleLine="true"
                             android:text="@string/local"
-                            android:textColor="@color/tv_text_secondary"
+                            android:textColor="@drawable/selector_radio_txt_color"
                             android:textSize="13sp" />
 
                     </RadioGroup>
@@ -185,13 +188,13 @@
                 <ScrollView
                     android:background="@color/background_popup"
                     android:layout_weight="1.0"
-                    android:gravity="start"
+                    android:padding="0dp"
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
                     android:scrollbarStyle="outsideInset"
                     android:scrollbars="vertical"
                     android:fillViewport="true"
-                    android:fitsSystemWindows="true"
+                    android:fitsSystemWindows="false"
                     android:focusable="true" >
 
                     <LinearLayout
@@ -405,8 +408,8 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:text="@string/book_intro"
-                            android:textColor="@color/tv_text_secondary"
-                            android:textSize="15sp"
+                            android:textColor="@color/tv_text_summary"
+                            android:textSize="14sp"
                             android:visibility="invisible" />
 
                     </LinearLayout>
@@ -433,7 +436,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/selector_fillet_btn_bg"
+                            android:background="@drawable/selector_common_bg"
                             android:clickable="true"
                             android:focusable="true"
                             android:gravity="center"
@@ -442,7 +445,8 @@
                             android:textColor="@color/tv_text_default"
                             android:textSize="15sp" />
 
-                        <TextView
+                        <com.kunfei.bookshelf.widget.views.ATEAccentBgTextView
+                            app:cornerRadius="0dp"
                             android:id="@+id/tv_read"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -453,7 +457,6 @@
                             android:gravity="center"
                             android:includeFontPadding="false"
                             android:text="@string/start_read"
-                            android:textColor="@color/tv_text_default"
                             android:textSize="15sp" />
 
                     </LinearLayout>
@@ -462,7 +465,7 @@
                         android:id="@+id/tv_loading"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/tv_text_button_nor"
+                        android:background="@color/background_popup"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"

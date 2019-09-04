@@ -1496,6 +1496,8 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                             mPresenter.getBookShelf().getReplaceEnable()),
                     mPresenter.getBookShelf().isAudio(),
                     mPresenter.getBookShelf().getDurChapterPage());
+            if (mediaPlayerPop != null)
+                mediaPlayerPop.startAnimation();
         }
     }
 
@@ -1807,10 +1809,14 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
             case PAUSE:
                 ReadAloudService.resume(this);
                 readBottomMenu.setFabReadAloudText(getString(R.string.read_aloud));
+                if (mediaPlayerPop != null)
+                    mediaPlayerPop.startAnimation();
                 break;
             case PLAY:
                 ReadAloudService.pause(this);
                 readBottomMenu.setFabReadAloudText(getString(R.string.read_aloud_pause));
+                if (mediaPlayerPop != null)
+                    mediaPlayerPop.pauseAnimation();
                 break;
             default:
                 ReadBookActivity.this.popMenuOut();

@@ -13,4 +13,16 @@
         android:scaleType="fitCenter"
         android:contentDescription="@string/welcome" />
 
+    <TextView
+        android:text="@string/welcomemsg"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:layout_marginBottom="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+
 </FrameLayout>
