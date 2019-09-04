@@ -113,7 +113,7 @@ public class SearchBookActivity extends MBaseActivity<SearchBookContract.Present
     @SuppressLint("InflateParams")
     @Override
     protected void bindView() {
-        cardSearch.setCardBackgroundColor(ThemeStore.primaryColorDark(this));
+        // cardSearch.setCardBackgroundColor(ThemeStore.primaryColorDark(this));
         initSearchView();
         setSupportActionBar(toolbar);
         setupActionBar();

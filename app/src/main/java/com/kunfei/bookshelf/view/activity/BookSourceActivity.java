@@ -73,7 +73,7 @@ public class BookSourceActivity extends MBaseActivity<BookSourceContract.Present
     private ItemTouchCallback itemTouchCallback;
     private boolean selectAll = true;
     private MenuItem groupItem;
-    private SubMenu groupMenu;
+    private SubMenu groupMenu, groupSourceFilter;
     private BookSourceAdapter adapter;
     private SearchView.SearchAutoComplete mSearchAutoComplete;
     private boolean isSearch;
@@ -267,10 +267,12 @@ public class BookSourceActivity extends MBaseActivity<BookSourceContract.Present
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        groupSourceFilter = menu.findItem(R.id.source_filter).getSubMenu();
         groupItem = menu.findItem(R.id.action_group);
         groupMenu = groupItem.getSubMenu();
         upGroupMenu();
         upSortMenu();
+        upScourcType();
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -324,6 +326,15 @@ public class BookSourceActivity extends MBaseActivity<BookSourceContract.Present
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.source_filter_all:
+                upFilter(0);
+                break;
+            case R.id.source_filter_text:
+                upFilter(1);
+                break;
+            case R.id.source_filter_audio:
+                upFilter(2);
+                break;
         }
         if (item.getGroupId() == R.id.source_group) {
             searchView.setQuery(item.getTitle(), true);
@@ -347,10 +358,22 @@ public class BookSourceActivity extends MBaseActivity<BookSourceContract.Present
         groupMenu.getItem(getSort()).setChecked(true);
     }
 
+    private void upScourcType() {
+        groupSourceFilter.getItem(0).setChecked(adapter.getFilter() == 0);
+        groupSourceFilter.getItem(1).setChecked(adapter.getFilter() == 1);
+        groupSourceFilter.getItem(2).setChecked(adapter.getFilter() == 2);
+    }
+
     private void upSourceSort(int sort) {
         preferences.edit().putInt("SourceSort", sort).apply();
         upSortMenu();
         setDragEnable(sort);
+        refreshBookSource();
+    }
+
+    private void upFilter(int filterType) {
+        adapter.setFilter(filterType);
+        upScourcType();
         refreshBookSource();
     }
 

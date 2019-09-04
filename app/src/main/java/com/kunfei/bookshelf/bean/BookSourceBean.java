@@ -3,6 +3,7 @@ package com.kunfei.bookshelf.bean;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.kunfei.bookshelf.constant.BookType;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -501,6 +502,10 @@ public class BookSourceBean implements Cloneable {
 
     public void setBookSourceType(String bookSourceType) {
         this.bookSourceType = bookSourceType;
+    }
+
+    public boolean isAudio () {
+        return BookType.AUDIO.equals(bookSourceType);
     }
 
     public String getRuleSearchIntroduce() {

@@ -33,6 +33,7 @@ public class BookSourceAdapter extends RecyclerView.Adapter<BookSourceAdapter.My
     private BookSourceActivity activity;
     private int index;
     private int sort;
+    private int filter;
 
     private ItemTouchCallback.OnItemTouchCallbackListener itemTouchCallbackListener = new ItemTouchCallback.OnItemTouchCallbackListener() {
         @Override
@@ -57,7 +58,22 @@ public class BookSourceAdapter extends RecyclerView.Adapter<BookSourceAdapter.My
     }
 
     public void resetDataS(List<BookSourceBean> bookSourceBeanList) {
-        this.dataList = bookSourceBeanList;
+
+        if (filter == 0)
+            this.dataList = bookSourceBeanList;
+        else {
+            // 書源類型過濾
+            this.dataList = new ArrayList<>();
+            for (int i=0; i < bookSourceBeanList.size(); i++) {
+                BookSourceBean item = bookSourceBeanList.get(i);
+                boolean isAudio = item.isAudio();
+                if (filter == 1 && !isAudio)
+                    this.dataList.add(item);
+                else if (filter == 2 && isAudio)
+                    this.dataList.add(item);
+            }
+        }
+
         notifyDataSetChanged();
         activity.upDateSelectAll();
         activity.upSearchView(dataList.size());
@@ -91,6 +107,13 @@ public class BookSourceAdapter extends RecyclerView.Adapter<BookSourceAdapter.My
     public void setSort(int sort) {
         this.sort = sort;
     }
+
+    /**
+     * @param filter 0 全部, 1 文本, 2 音頻
+     */
+    public void setFilter(int filter) { this.filter = filter; }
+
+    public int getFilter() { return this.filter; }
 
     @NonNull
     @Override

@@ -28,7 +28,7 @@
                 android:id="@+id/card_search"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                app:cardBackgroundColor="@color/background_card"
+                android:background="?attr/colorPrimary"
                 app:cardElevation="0dp">
 
                 <androidx.appcompat.widget.SearchView
@@ -37,6 +37,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-5dp"
                     android:imeOptions="actionSearch"
+                    android:background="?attr/colorPrimary"
+                    android:gravity="center"
                     app:iconifiedByDefault="false"
                     app:queryBackground="@null"
                     app:searchIcon="@null"

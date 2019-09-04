@@ -35,6 +35,30 @@
                     android:title="@string/sort_pin_yin" />
 
                 <item
+                    android:id="@+id/source_filter"
+                    android:title="@string/menu_src_filter" >
+
+                    <menu>
+
+                        <item
+                            android:id="@+id/source_filter_all"
+                            android:checkable="true"
+                            android:title="@string/menu_src_all" />
+
+                        <item
+                            android:id="@+id/source_filter_text"
+                            android:checkable="true"
+                            android:title="@string/menu_src_text" />
+
+                        <item
+                            android:id="@+id/source_filter_audio"
+                            android:checkable="true"
+                            android:title="@string/menu_src_audio" />
+                    </menu>
+
+                </item>
+
+                <item
                     android:id="@+id/show_enabled"
                     android:title="@string/show_enabled" />
 
