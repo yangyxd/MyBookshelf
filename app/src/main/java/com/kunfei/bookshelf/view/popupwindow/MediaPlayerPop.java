@@ -60,7 +60,7 @@ public class MediaPlayerPop extends FrameLayout {
     @BindView(R.id.iv_skip_previous)
     ImageView ivSkipPrevious;
     @BindView(R.id.fab_play_stop)
-    FloatingActionButton fabPlayStop;
+    ImageView fabPlayStop;
     @BindView(R.id.iv_skip_next)
     ImageView ivSkipNext;
     @BindView(R.id.iv_timer)
@@ -100,7 +100,7 @@ public class MediaPlayerPop extends FrameLayout {
         ButterKnife.bind(this, view);
         view.setBackgroundColor(ThemeStore.primaryColor(context));
         vwBg.setOnClickListener(null);
-        primaryTextColor = MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(ThemeStore.primaryColor(context)));
+        // primaryTextColor = MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(ThemeStore.primaryColor(context)));
         setColor(ivSkipPrevious.getDrawable());
         setColor(ivSkipNext.getDrawable());
         setColor(ivChapter.getDrawable());
@@ -125,8 +125,9 @@ public class MediaPlayerPop extends FrameLayout {
             }
         });
 
+        // 中间的转圈动画
         animation = new RotateAnimation(0, 360, RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
-        animation.setDuration(8000);//设定转一圈的时间
+        animation.setDuration(30000);//设定转一圈的时间
         animation.setRepeatCount(Animation.INFINITE);//设定无限循环
         animation.setRepeatMode(Animation.RESTART);//
         animation.setInterpolator(new LinearInterpolator());
@@ -142,8 +143,8 @@ public class MediaPlayerPop extends FrameLayout {
     }
 
     private void setColor(Drawable drawable) {
-        drawable.mutate();
-        drawable.setColorFilter(primaryTextColor, PorterDuff.Mode.SRC_ATOP);
+        // drawable.mutate();
+        // drawable.setColorFilter(primaryTextColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     public void setCallback(Callback callback) {

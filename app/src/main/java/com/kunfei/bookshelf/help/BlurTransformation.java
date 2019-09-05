@@ -3,6 +3,7 @@ package com.kunfei.bookshelf.help;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -16,6 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 import java.security.MessageDigest;
 
+/** 先缩小再模糊 */
 public class BlurTransformation extends BitmapTransformation {
     private RenderScript rs;
     private int radius;
@@ -29,31 +31,42 @@ public class BlurTransformation extends BitmapTransformation {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
-        Bitmap blurredBitmap = toTransform.copy(Bitmap.Config.ARGB_8888, true);
+        if (radius > 0 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            final int maxWidth = 720;
+            final int maxHeight = 720;
+            final int w = toTransform.getWidth();
+            final int h = toTransform.getHeight();
 
-        // Allocate memory for Renderscript to work with
-        //分配用于渲染脚本的内存
-        Allocation input = Allocation.createFromBitmap(rs, blurredBitmap, Allocation.MipmapControl.MIPMAP_FULL, Allocation.USAGE_SHARED);
-        Allocation output = Allocation.createTyped(rs, input.getType());
+            int blurZoom = 3;
+            if (h > maxHeight || w > maxWidth) {
+                final int heightRatio = Math.round((float) h / (float) maxHeight);
+                final int widthRatio = Math.round((float) w / (float) maxWidth);
+                blurZoom = Math.max(blurZoom, heightRatio > widthRatio ? heightRatio : widthRatio);
+            };
 
-        // Load up an instance of the specific script that we want to use.
-        //加载我们想要使用的特定脚本的实例。
-        ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        script.setInput(input);
-
-        // Set the blur radius
-        //设置模糊半径
-        script.setRadius(radius);
-
-        // Start the ScriptIntrinsicBlur
-        //启动 ScriptIntrinsicBlur,
-        script.forEach(output);
-
-        // Copy the output to the blurred bitmap
-        //将输出复制到模糊的位图
-        output.copyTo(blurredBitmap);
-
-        return blurredBitmap;
+            ScriptIntrinsicBlur _blur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+            Bitmap _temp, bm;
+            if (blurZoom == 0) {
+                bm = toTransform;
+                _temp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            } else {
+                int tw = w / blurZoom;
+                int th = h / blurZoom;
+                bm = Bitmap.createScaledBitmap(toTransform, tw, th, false);
+                _temp = Bitmap.createBitmap(tw, th, Bitmap.Config.ARGB_8888);
+            }
+            Allocation _in = Allocation.createFromBitmap(rs, bm);
+            Allocation _out = Allocation.createFromBitmap(rs, _temp);
+            _blur.setRadius(Math.min(25.0f, radius)); // 0 ~ 25
+            _blur.setInput(_in);
+            _blur.forEach(_out);
+            _out.copyTo(_temp);
+            if (blurZoom == 0)
+                return Bitmap.createBitmap(_temp);
+            else
+                return Bitmap.createScaledBitmap(_temp, w, h, true);
+        } else
+            return toTransform.copy(Bitmap.Config.ARGB_8888, true);
     }
 
     @Override

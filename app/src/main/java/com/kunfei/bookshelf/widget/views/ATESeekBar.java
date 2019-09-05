@@ -1,10 +1,12 @@
 package com.kunfei.bookshelf.widget.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatSeekBar;
 
+import com.kunfei.bookshelf.R;
 import com.kunfei.bookshelf.utils.theme.ATH;
 import com.kunfei.bookshelf.utils.theme.ThemeStore;
 
@@ -29,6 +31,7 @@ public class ATESeekBar extends AppCompatSeekBar {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        ATH.setTint(this, ThemeStore.accentColor(context));
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ATESeekBar);
+        ATH.setTint(this, a.getColor(R.styleable.ATESeekBar_tint, ThemeStore.accentColor(context)));
     }
 }

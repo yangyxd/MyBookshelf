@@ -53,6 +53,10 @@
         <attr name="checkedStrokeColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="ATESeekBar">
+        <attr name="tint" />
+    </declare-styleable>
+
     <dimen name="adjust_margin_left">55dp</dimen>
     <dimen name="adjust_margin_right">45dp</dimen>
     <dimen name="adjust_margin_barH">25dp</dimen>

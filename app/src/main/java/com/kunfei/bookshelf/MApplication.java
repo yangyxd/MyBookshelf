@@ -60,6 +60,10 @@ public class MApplication extends Application {
         return getInstance().getResources();
     }
 
+    public static Context getContext() {
+        return getInstance().getApplicationContext();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

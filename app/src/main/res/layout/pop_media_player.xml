@@ -11,56 +11,65 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/iv_cover_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/img_cover"
+            android:src="@drawable/img_cover_default" />
+
+        <View
+            android:background="#2f000000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <androidx.cardview.widget.CardView
+            app:cardBackgroundColor="#5f7f7f7f"
+            app:cardElevation="16dp"
+            app:cardCornerRadius="123dp"
+            app:contentPadding="8dp"
+            android:layout_marginBottom="80dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="230dp"
+                android:layout_height="230dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/img_cover"
+                android:src="@drawable/img_cover_default"
+                app:civ_border_color="@color/ate_control_disabled_light"
+                app:civ_border_width="1px"
+                android:transformPivotX="115dp"
+                android:transformPivotY="115dp"
+                tools:ignore="HardcodedText" />
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="bottom"
+        android:layout_marginBottom="36dp"
+        android:padding="12dp"
         android:orientation="vertical">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/iv_cover_bg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/img_cover"
-                android:src="@drawable/img_cover_default" />
-
-            <androidx.cardview.widget.CardView
-                app:cardBackgroundColor="@color/ate_control_disabled_light"
-                app:cardElevation="24dp"
-                app:cardCornerRadius="115dp"
-                app:contentPadding="2dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/iv_cover"
-                    android:layout_width="230dp"
-                    android:layout_height="230dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/img_cover"
-                    android:src="@drawable/img_cover_default"
-                    app:civ_border_color="@color/ate_control_disabled_light"
-                    app:civ_border_width="1px"
-                    android:transformPivotX="115dp"
-                    android:transformPivotY="115dp"
-                    tools:ignore="HardcodedText" />
-
-            </androidx.cardview.widget.CardView>
-
-        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingBottom="24dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp">
 
@@ -68,9 +77,11 @@
                 android:id="@+id/tv_dur_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 tools:ignore="RtlSymmetry" />
 
             <com.kunfei.bookshelf.widget.views.ATESeekBar
+                app:tint="#efffffff"
                 android:id="@+id/player_progress"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
@@ -79,6 +90,7 @@
 
             <TextView
                 android:id="@+id/tv_all_time"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -98,6 +110,7 @@
                 android:layout_height="36dp"
                 android:background="@drawable/bg_ib_pre_round"
                 android:contentDescription="@string/set_timer"
+                android:tint="@drawable/selector_paly_btn"
                 android:src="@drawable/ic_timer_black_24dp" />
 
             <View
@@ -111,20 +124,38 @@
                 android:layout_height="36dp"
                 android:background="@drawable/bg_ib_pre_round"
                 android:contentDescription="@string/skip_previous"
+                android:tint="@drawable/selector_paly_btn"
                 android:src="@drawable/ic_skip_previous" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_play_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:contentDescription="@string/read_aloud"
-                android:src="@drawable/ic_play_24dp"
-                android:tint="@color/tv_text_default"
-                app:backgroundTint="@color/background_menu"
-                app:elevation="2dp"
-                app:fabSize="normal"
-                app:pressedTranslationZ="2dp" />
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_weight="1">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/tvOther"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/custom_mr"
+                    android:tooltipText="@string/custom_mr"
+                    android:src="@color/transparent"
+                    app:civ_border_color="@color/background_menu"
+                    app:civ_border_width="4dp"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/fab_play_stop"
+                    android:contentDescription="@string/read_aloud"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_play_24dp"
+                    app:tint="@drawable/selector_paly_btn"
+                    tools:ignore="NestedWeights" />
+
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/iv_skip_next"
@@ -132,6 +163,7 @@
                 android:layout_height="36dp"
                 android:background="@drawable/bg_ib_pre_round"
                 android:contentDescription="@string/skip_next"
+                android:tint="@drawable/selector_paly_btn"
                 android:src="@drawable/ic_skip_next" />
 
             <View
@@ -143,7 +175,9 @@
                 android:id="@+id/iv_chapter"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:padding="2dp"
                 android:background="@drawable/bg_ib_pre_round"
+                android:tint="@drawable/selector_paly_btn"
                 android:src="@drawable/ic_chapter_list"
                 android:contentDescription="@string/chapter_list" />
 

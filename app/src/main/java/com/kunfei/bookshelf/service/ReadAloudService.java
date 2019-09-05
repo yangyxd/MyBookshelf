@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -272,6 +273,8 @@ public class ReadAloudService extends Service {
             mp.reset();
             RxBus.get().post(RxBusTag.ALOUD_STATE, Status.NEXT);
         });
+        mediaPlayer.setWakeMode(MApplication.getInstance().getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
 
     private void newReadAloud(String content, Boolean aloudButton, String title, String text, boolean isAudio, int progress) {

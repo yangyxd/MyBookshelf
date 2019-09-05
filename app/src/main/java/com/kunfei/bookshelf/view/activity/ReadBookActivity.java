@@ -811,6 +811,9 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
      * 加载阅读页面
      */
     private void initPageView() {
+        if (mPresenter.getBookShelf().isAudio() && mediaPlayerPop.getVisibility() != View.VISIBLE) {
+            mediaPlayerPop.setVisibility(View.VISIBLE);
+        }
         mPageLoader = pageView.getPageLoader(this, mPresenter.getBookShelf(),
                 new PageLoader.Callback() {
                     @Override
@@ -898,7 +901,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                         int audioSize = end != null ? end.intValue() : 0;
                         mediaPlayerPop.upAudioSize(audioSize);
                         mediaPlayerPop.upAudioDur(mPresenter.getBookShelf().getDurChapterPage());
-                        if (mPresenter.getBookShelf().isAudio() && mPageLoader.getPageStatus() == TxtChapter.Status.FINISH) {
+                        if (mPresenter.getBookShelf().isAudio()) { //  && mPageLoader.getPageStatus() == TxtChapter.Status.FINISH) {
                             if (mediaPlayerPop.getVisibility() != View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.VISIBLE);
                             }
