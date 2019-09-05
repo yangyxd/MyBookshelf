@@ -508,6 +508,10 @@ public abstract class PageLoader {
         return curChapter().txtChapter != null ? curChapter().txtChapter.getStatus() : TxtChapter.Status.LOADING;
     }
 
+    public TxtChapter getPage() {
+        return curChapter().txtChapter;
+    }
+
     /**
      * 获取当前页的页码
      */
@@ -1489,8 +1493,10 @@ public abstract class PageLoader {
     /**
      * 获取状态文本
      */
-    private String getStatusText(TxtChapter chapter) {
+    public String getStatusText(TxtChapter chapter) {
         String tip = "";
+        if (chapter == null)
+            return "未知错误";
         switch (chapter.getStatus()) {
             case LOADING:
                 tip = mContext.getString(R.string.loading);

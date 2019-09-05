@@ -105,6 +105,10 @@ public class MediaPlayerPop extends FrameLayout {
         setCover(book.getCustomCoverPath() != null ? book.getCustomCoverPath() : book.getBookInfoBean().getCoverUrl());
     }
 
+    public void setStateMsg(String msg) {
+        tvDesc.setText(msg);
+    }
+
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.pop_media_player, this);
         ButterKnife.bind(this, view);

@@ -880,6 +880,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                         if (mPageLoader.getPageStatus() == TxtChapter.Status.LOADING
                                 || mPageLoader.getPageStatus() == TxtChapter.Status.ERROR) {
                             readBottomMenu.getReadProgress().setEnabled(false);
+                            mediaPlayerPop.setStateMsg(mPageLoader.getStatusText(mPageLoader.getPage()));
                         } else {
                             readBottomMenu.getReadProgress().setEnabled(true);
                         }
@@ -904,6 +905,8 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                             if (mediaPlayerPop.getVisibility() != View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.VISIBLE);
                             }
+                            if (mPageLoader.getPageStatus() != TxtChapter.Status.FINISH)
+                                mediaPlayerPop.setStateMsg(mPageLoader.getStatusText(mPageLoader.getPage()));
                         } else {
                             if (mediaPlayerPop.getVisibility() == View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.GONE);
