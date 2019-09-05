@@ -182,7 +182,10 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
             if (mPresenter.getInBookShelf()) {
                 tvChapter.setText(bookShelfBean.getDurChapterName()); // last
                 tvShelf.setText(R.string.remove_from_bookshelf);
-                tvRead.setText(R.string.continue_read);
+                if (bookInfoBean.isAudio())
+                    tvRead.setText(R.string.continue_play);
+                else
+                    tvRead.setText(R.string.continue_read);
                 tvShelf.setOnClickListener(v -> {
                     //从书架移出
                     mPresenter.removeFromBookShelf();
@@ -192,7 +195,10 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
                     tvChapter.setText(bookShelfBean.getLastChapterName()); // last
                 }
                 tvShelf.setText(R.string.add_to_shelf);
-                tvRead.setText(R.string.start_read);
+                if (bookInfoBean.isAudio())
+                    tvRead.setText(R.string.start_play);
+                else
+                    tvRead.setText(R.string.start_read);
                 tvShelf.setOnClickListener(v -> {
                     //放入书架
                     mPresenter.addToBookShelf();

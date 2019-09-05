@@ -25,6 +25,9 @@
     <string name="book_author">作者</string>
     <string name="reload">刷新</string>
 
+    <string name="start_play">开始播放</string>
+    <string name="continue_play">继续播放</string>
+
     <string name="menu_src_filter">书源类型</string>
     <string name="menu_src_all">所有源</string>
     <string name="menu_src_text">文本源</string>

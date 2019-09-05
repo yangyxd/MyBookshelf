@@ -911,16 +911,18 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                         int audioSize = end != null ? end.intValue() : 0;
                         mediaPlayerPop.upAudioSize(audioSize);
                         mediaPlayerPop.upAudioDur(mPresenter.getBookShelf().getDurChapterPage());
-                        if (mPresenter.getBookShelf().isAudio()) { //  && mPageLoader.getPageStatus() == TxtChapter.Status.FINISH) {
+                        boolean isAudio = mPresenter.getBookShelf().isAudio();
+                        if (isAudio) { //  && mPageLoader.getPageStatus() == TxtChapter.Status.FINISH) {
                             if (mediaPlayerPop.getVisibility() != View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.VISIBLE);
                             }
+                            onStateChange(mPageLoader.getStatusText(mPageLoader.getPage()));
                         } else {
                             if (mediaPlayerPop.getVisibility() == View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.GONE);
                             }
                         }
-                        if ((ReadAloudService.running)) {
+                        if ((ReadAloudService.running) || isAudio) {
                             if (resetReadAloud) {
                                 readAloud();
                                 return;
@@ -1499,6 +1501,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
      */
     private void readAloud() {
         aloudNextPage = false;
+        if (mPageLoader == null) return;
         String unReadContent = mPageLoader.getUnReadContent();
         if (mPresenter.getBookShelf() != null && mPageLoader != null && !StringUtils.isTrimEmpty(unReadContent)) {
             ReadAloudService.play(ReadBookActivity.this, false, unReadContent,
