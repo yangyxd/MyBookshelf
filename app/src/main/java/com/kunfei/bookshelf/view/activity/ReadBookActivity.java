@@ -806,10 +806,16 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
         initPageView();
     }
 
+    private void initPageLoader() {
+        if (mPageLoader != null) return;
+        startLoadingBook();
+    }
+
     /**
      * 加载阅读页面
      */
     private void initPageView() {
+        if (mPageLoader != null) return;
         if (mPresenter.getBookShelf().isAudio() && mediaPlayerPop.getVisibility() != View.VISIBLE) {
             mediaPlayerPop.setVisibility(View.VISIBLE);
         }
@@ -1512,8 +1518,6 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                             mPresenter.getBookShelf().getReplaceEnable()),
                     mPresenter.getBookShelf().isAudio(),
                     mPresenter.getBookShelf().getDurChapterPage());
-            if (mediaPlayerPop != null)
-                mediaPlayerPop.startAnimation();
         }
     }
 
@@ -1572,17 +1576,20 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                 readBottomMenu.setReadAloudTimer(true);
                 mediaPlayerPop.setFabReadAloudImage(R.drawable.ic_pause_24dp);
                 mediaPlayerPop.setSeekBarEnable(true);
+                mediaPlayerPop.startAnimation();
                 break;
             case PAUSE:
                 readBottomMenu.setFabReadAloudImage(R.drawable.ic_play_outline_24dp);
                 readBottomMenu.setReadAloudTimer(true);
                 mediaPlayerPop.setFabReadAloudImage(R.drawable.ic_play_24dp);
                 mediaPlayerPop.setSeekBarEnable(false);
+                mediaPlayerPop.pauseAnimation();
                 break;
             default:
                 readBottomMenu.setFabReadAloudImage(R.drawable.ic_read_aloud);
                 readBottomMenu.setReadAloudTimer(false);
                 mediaPlayerPop.setFabReadAloudImage(R.drawable.ic_play_24dp);
+                mediaPlayerPop.pauseAnimation();
                 pageView.drawPage(0);
                 pageView.invalidate();
                 pageView.drawPage(-1);
@@ -1673,8 +1680,6 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                     return true;
                 } else if (ReadAloudService.running && aloudStatus == ReadAloudService.Status.PLAY) {
                     ReadAloudService.pause(this);
-                    if (mediaPlayerPop != null)
-                        mediaPlayerPop.pauseAnimation();
                     if (!mPresenter.getBookShelf().isAudio()) {
                         toast(R.string.read_aloud_pause);
                     }
@@ -1819,6 +1824,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
      */
     @Override
     public void onMediaButton() {
+        initPageLoader();
         if (!ReadAloudService.running) {
             aloudStatus = ReadAloudService.Status.STOP;
             SystemUtil.ignoreBatteryOptimization(this);
@@ -1827,14 +1833,10 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
             case PAUSE:
                 ReadAloudService.resume(this);
                 readBottomMenu.setFabReadAloudText(getString(R.string.read_aloud));
-                if (mediaPlayerPop != null)
-                    mediaPlayerPop.startAnimation();
                 break;
             case PLAY:
                 ReadAloudService.pause(this);
                 readBottomMenu.setFabReadAloudText(getString(R.string.read_aloud_pause));
-                if (mediaPlayerPop != null)
-                    mediaPlayerPop.pauseAnimation();
                 break;
             default:
                 ReadBookActivity.this.popMenuOut();
