@@ -26,6 +26,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kunfei.bookshelf.R;
+import com.kunfei.bookshelf.bean.BookShelfBean;
 import com.kunfei.bookshelf.help.BlurTransformation;
 import com.kunfei.bookshelf.utils.ColorUtil;
 import com.kunfei.bookshelf.utils.TimeUtils;
@@ -51,9 +52,12 @@ public class MediaPlayerPop extends FrameLayout {
     View vwBg;
     @BindView(R.id.iv_cover)
     ImageView ivCover;
+    @BindView(R.id.tv_name)
+    TextView tvName;
+    @BindView(R.id.tv_desc)
+    TextView tvDesc;
     @BindView(R.id.tv_dur_time)
-    TextView tvDurTime;
-    @BindView(R.id.player_progress)
+    TextView tvDurTime;    @BindView(R.id.player_progress)
     ATESeekBar seekBar;
     @BindView(R.id.tv_all_time)
     TextView tvAllTime;
@@ -93,6 +97,12 @@ public class MediaPlayerPop extends FrameLayout {
     public MediaPlayerPop(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
+    }
+
+    public void initBookBean(BookShelfBean book) {
+        tvName.setText(book.getBookInfoBean().getName());
+        tvDesc.setText(book.getBookInfoBean().getAuthor());
+        setCover(book.getCustomCoverPath() != null ? book.getCustomCoverPath() : book.getBookInfoBean().getCoverUrl());
     }
 
     private void init(Context context) {
