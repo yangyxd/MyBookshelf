@@ -58,6 +58,7 @@ public abstract class PageLoader {
     Callback callback;
     private Context mContext;
     BookShelfBean book;
+    private boolean isAudio;
     // 页面显示类
     PageView mPageView;
     private List<ChapterContainer> chapterContainers = new ArrayList<>();
@@ -155,6 +156,7 @@ public abstract class PageLoader {
         mCurPagePos = book.getDurChapterPage();
         compositeDisposable = new CompositeDisposable();
         oneSpPx = ScreenUtils.spToPx(1);
+        isAudio = this.book.isAudio();
         // 初始化数据
         initData();
         // 初始化画笔
@@ -837,7 +839,7 @@ public abstract class PageLoader {
      * 横翻模式绘制背景
      */
     private synchronized void drawBackground(Bitmap bitmap, TxtChapter txtChapter, TxtPage txtPage) {
-        if (bitmap == null) return;
+        if (bitmap == null || isAudio) return;
         Canvas canvas = new Canvas(bitmap);
         if (!readBookControl.bgIsColor() && !readBookControl.bgBitmapIsNull()) {
             Rect mDestRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -853,7 +855,7 @@ public abstract class PageLoader {
      */
     @SuppressLint("DefaultLocale")
     private synchronized void drawBackground(final Canvas canvas, TxtChapter txtChapter, TxtPage txtPage) {
-        if (canvas == null) return;
+        if (canvas == null || isAudio) return;
         if (!callback.getChapterList().isEmpty()) {
             String title = callback.getChapterList().size() > txtChapter.getPosition() ? callback.getChapterList().get(txtChapter.getPosition()).getDurChapterName() : "";
             title = ChapterContentHelp.getInstance().replaceContent(book.getBookInfoBean().getName(), book.getTag(), title, book.getReplaceEnable());
@@ -1197,6 +1199,8 @@ public abstract class PageLoader {
             chapterPos += 1;
             pagePos = 0;
         }
+        if (isAudio) return;
+
         String str;
         linePos = 0;
         boolean linePosSet = false;
@@ -1476,6 +1480,7 @@ public abstract class PageLoader {
     }
 
     private void drawErrorMsg(Canvas canvas, String msg, float offset) {
+        callback.onStateChange(msg);
         Layout tempLayout = new StaticLayout(msg, mTextPaint, mVisibleWidth, Layout.Alignment.ALIGN_NORMAL, 0, 0, false);
         List<String> linesData = new ArrayList<>();
         for (int i = 0; i < tempLayout.getLineCount(); i++) {
@@ -1859,5 +1864,7 @@ public abstract class PageLoader {
         void onPageChange(int chapterIndex, int pageIndex, boolean resetReadAloud);
 
         void vipPop();
+
+        void onStateChange(String msg);
     }
 }

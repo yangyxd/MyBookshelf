@@ -101,7 +101,6 @@ public class MediaPlayerPop extends FrameLayout {
 
     public void initBookBean(BookShelfBean book) {
         tvName.setText(book.getBookInfoBean().getName());
-        tvDesc.setText(book.getBookInfoBean().getAuthor());
         setCover(book.getCustomCoverPath() != null ? book.getCustomCoverPath() : book.getBookInfoBean().getCoverUrl());
     }
 

@@ -802,8 +802,8 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
      */
     @Override
     public void startLoadingBook() {
-        initPageView();
         mediaPlayerPop.initBookBean(mPresenter.getBookShelf());
+        initPageView();
     }
 
     /**
@@ -818,6 +818,17 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                     @Override
                     public List<BookChapterBean> getChapterList() {
                         return mPresenter.getChapterList();
+                    }
+
+                    @Override
+                    public void onStateChange(String msg) {
+                        if (mediaPlayerPop.getVisibility() == View.VISIBLE) {
+                            // 如果音乐播放器显示时，如果状态异步，显示状态信息，否则显示当前章节名称
+                            if (mPageLoader.getPageStatus() != TxtChapter.Status.FINISH)
+                                mediaPlayerPop.setStateMsg(msg);
+                            else
+                                mediaPlayerPop.setStateMsg(mPresenter.getBookShelf().getDurChapterName());
+                        }
                     }
 
                     /**
@@ -880,7 +891,6 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                         if (mPageLoader.getPageStatus() == TxtChapter.Status.LOADING
                                 || mPageLoader.getPageStatus() == TxtChapter.Status.ERROR) {
                             readBottomMenu.getReadProgress().setEnabled(false);
-                            mediaPlayerPop.setStateMsg(mPageLoader.getStatusText(mPageLoader.getPage()));
                         } else {
                             readBottomMenu.getReadProgress().setEnabled(true);
                         }
@@ -905,8 +915,6 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                             if (mediaPlayerPop.getVisibility() != View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.VISIBLE);
                             }
-                            if (mPageLoader.getPageStatus() != TxtChapter.Status.FINISH)
-                                mediaPlayerPop.setStateMsg(mPageLoader.getStatusText(mPageLoader.getPage()));
                         } else {
                             if (mediaPlayerPop.getVisibility() == View.VISIBLE) {
                                 mediaPlayerPop.setVisibility(View.GONE);
