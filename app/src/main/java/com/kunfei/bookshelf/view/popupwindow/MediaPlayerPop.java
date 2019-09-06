@@ -56,8 +56,11 @@ public class MediaPlayerPop extends FrameLayout {
     TextView tvName;
     @BindView(R.id.tv_desc)
     TextView tvDesc;
+    @BindView(R.id.tv_chapter)
+    TextView tvChapter;
     @BindView(R.id.tv_dur_time)
-    TextView tvDurTime;    @BindView(R.id.player_progress)
+    TextView tvDurTime;
+    @BindView(R.id.player_progress)
     ATESeekBar seekBar;
     @BindView(R.id.tv_all_time)
     TextView tvAllTime;
@@ -101,11 +104,16 @@ public class MediaPlayerPop extends FrameLayout {
 
     public void initBookBean(BookShelfBean book) {
         tvName.setText(book.getBookInfoBean().getName());
+        setChapterName(book.getDurChapterName());
         setCover(book.getCustomCoverPath() != null ? book.getCustomCoverPath() : book.getBookInfoBean().getCoverUrl());
     }
 
     public void setStateMsg(String msg) {
         tvDesc.setText(msg);
+    }
+
+    public void setChapterName(String chapterName) {
+        tvChapter.setText(chapterName);
     }
 
     private void init(Context context) {

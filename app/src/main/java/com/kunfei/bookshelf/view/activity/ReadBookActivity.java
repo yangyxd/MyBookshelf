@@ -836,12 +836,14 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
 
                     @Override
                     public void onStateChange(String msg) {
-                        if (mediaPlayerPop.getVisibility() == View.VISIBLE) {
+                        if (mediaPlayerPop.getVisibility() == View.VISIBLE && mPageLoader != null) {
                             // 如果音乐播放器显示时，如果状态异步，显示状态信息，否则显示当前章节名称
                             if (mPageLoader.getPageStatus() != TxtChapter.Status.FINISH)
                                 mediaPlayerPop.setStateMsg(msg);
-                            else
-                                mediaPlayerPop.setStateMsg(mPresenter.getBookShelf().getDurChapterName());
+                            else {
+                                mediaPlayerPop.setChapterName(mPresenter.getBookShelf().getDurChapterName());
+                                mediaPlayerPop.setStateMsg(StringUtils.formatHtml(mPresenter.getBookShelf().getBookInfoBean().getIntroduce()));
+                            }
                         }
                     }
 
