@@ -206,16 +206,21 @@ public class MediaPlayerPop extends FrameLayout {
         fabPlayStop.setImageResource(id);
     }
 
+    private String lastCoverPath;
+
     public void setCover(String coverPath) {
         if (TextUtils.isEmpty(coverPath)) return;
+        if (coverPath.equals(lastCoverPath)) return;
+        lastCoverPath = coverPath;
         if (coverPath.startsWith("http")) {
             Glide.with(this).load(coverPath)
                     .apply(new RequestOptions().dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE).centerCrop()
-                            .placeholder(R.drawable.img_cover_default))
+                            .placeholder(ivCover.getDrawable() != null ? ivCover.getDrawable() : this.getResources().getDrawable(R.drawable.img_cover_default)))
                     .into(ivCover);
+
             Glide.with(this).load(coverPath)
                     .apply(new RequestOptions().dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE).centerCrop()
-                            .placeholder(R.drawable.img_cover_gs))
+                            .placeholder(ivCoverBg.getDrawable() != null ? ivCoverBg.getDrawable() : this.getResources().getDrawable(R.drawable.img_cover_gs)))
                     .apply(RequestOptions.bitmapTransform(new BlurTransformation(getContext(), 25)))
                     .into(ivCoverBg);
         } else {

@@ -3,6 +3,7 @@ package com.kunfei.bookshelf.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -245,19 +246,19 @@ public class BookDetailActivity extends MBaseActivity<BookDetailContract.Present
 
     private void upImageView(String path) {
         if (TextUtils.isEmpty(path)) return;
-        if (Objects.equals(coverPath, path)) return;
+        if (path.equals(coverPath)) return;
         if (this.isFinishing()) return;
         coverPath = path;
         if (coverPath.startsWith("http")) {
             Glide.with(this).load(coverPath)
                     .dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .centerCrop()
-                    .placeholder(R.drawable.img_cover_default)
+                    .placeholder(ivCover.getDrawable() != null ? ivCover.getDrawable() : this.getResources().getDrawable(R.drawable.img_cover_default))
                     .into(ivCover);
             Glide.with(this).load(coverPath)
                     .dontAnimate().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .centerCrop()
-                    .placeholder(R.drawable.img_cover_gs)
+                    .placeholder(ivBlurCover.getDrawable() != null ? ivBlurCover.getDrawable() : this.getResources().getDrawable(R.drawable.img_cover_gs))
                     .apply(RequestOptions.bitmapTransform(new BlurTransformation(this, 25)))
                     .into(ivBlurCover);
         } else {

@@ -52,7 +52,9 @@ import com.kunfei.bookshelf.bean.ReplaceRuleBean;
 import com.kunfei.bookshelf.bean.TxtChapterRuleBean;
 import com.kunfei.bookshelf.constant.RxBusTag;
 import com.kunfei.bookshelf.dao.TxtChapterRuleBeanDao;
+import com.kunfei.bookshelf.help.AudioMgrHelper;
 import com.kunfei.bookshelf.help.ChapterContentHelp;
+import com.kunfei.bookshelf.help.MediaManager;
 import com.kunfei.bookshelf.help.ReadBookControl;
 import com.kunfei.bookshelf.help.permission.Permissions;
 import com.kunfei.bookshelf.help.permission.PermissionsCompat;
@@ -240,6 +242,8 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
     @Override
     protected void initImmersionBar() {
         super.initImmersionBar();
+        boolean hideStatusBar = readBookControl.getHideStatusBar() && (mediaPlayerPop.getVisibility() != View.VISIBLE);
+
         if (readBookControl.getHideNavigationBar()) {
             mImmersionBar.fullScreen(true);
             if (ImmersionBar.hasNavigationBar(this)) {
@@ -247,7 +251,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
             }
         }
 
-        if (readBookControl.getHideStatusBar()) {
+        if (hideStatusBar) {
             progressBarNextPage.setY(0);
         } else {
             progressBarNextPage.setY(ImmersionBar.getStatusBarHeight(this));
@@ -270,9 +274,9 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                 mImmersionBar.statusBarDarkFont(false);
             }
 
-            if (readBookControl.getHideStatusBar() && readBookControl.getHideNavigationBar()) {
+            if (hideStatusBar && readBookControl.getHideNavigationBar()) {
                 mImmersionBar.hideBar(BarHide.FLAG_HIDE_BAR);
-            } else if (readBookControl.getHideStatusBar()) {
+            } else if (hideStatusBar) {
                 mImmersionBar.hideBar(BarHide.FLAG_HIDE_STATUS_BAR);
                 changeNavigationBarColor(true);
             } else if (readBookControl.getHideNavigationBar()) {
@@ -542,12 +546,14 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
         });
         mediaPlayerPop.setPlayClickListener(v -> onMediaButton());
         mediaPlayerPop.setPrevClickListener(v -> {
+            initPageLoader();
             mPresenter.getBookShelf().setDurChapterPage(0);
-            mPageLoader.skipToPrePage();
+            mPageLoader.skipPreChapter();
         });
         mediaPlayerPop.setNextClickListener(v -> {
+            initPageLoader();
             mPresenter.getBookShelf().setDurChapterPage(0);
-            mPageLoader.skipToNextPage();
+            mPageLoader.skipNextChapter();
         });
         mediaPlayerPop.setCallback(dur -> ReadAloudService.setProgress(ReadBookActivity.this, dur));
     }
@@ -587,6 +593,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
             @Override
             public void skipPreChapter() {
                 if (mPresenter.getBookShelf() != null) {
+                    mPresenter.getBookShelf().setDurChapterPage(0);
                     mPageLoader.skipPreChapter();
                 }
             }
@@ -594,6 +601,7 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
             @Override
             public void skipNextChapter() {
                 if (mPresenter.getBookShelf() != null) {
+                    mPresenter.getBookShelf().setDurChapterPage(0);
                     mPageLoader.skipNextChapter();
                 }
             }
@@ -1695,6 +1703,16 @@ public class ReadBookActivity extends MBaseActivity<ReadBookContract.Presenter> 
                     popMenuIn();
                 }
                 return true;
+            } else if (mediaPlayerPop.getVisibility() == View.VISIBLE) {
+                if (aloudStatus != ReadAloudService.Status.PLAY) {
+                    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                        AudioMgrHelper.getInstance().subVoiceSystem();
+                        return true;
+                    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                        AudioMgrHelper.getInstance().addVoiceSystem();
+                        return true;
+                    }
+                }
             } else if (flMenu.getVisibility() != View.VISIBLE) {
                 if (readBookControl.getCanKeyTurn(aloudStatus == ReadAloudService.Status.PLAY) && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                     if (mPageLoader != null) {

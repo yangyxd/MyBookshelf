@@ -375,6 +375,7 @@ public abstract class PageLoader {
      */
     public void skipPreChapter() {
         if (mCurChapterPos <= 0) {
+            mPageView.showSnackBar("没有上一章");
             return;
         }
 
@@ -396,6 +397,7 @@ public abstract class PageLoader {
      */
     public boolean skipNextChapter() {
         if (mCurChapterPos + 1 >= book.getChapterListSize()) {
+            mPageView.showSnackBar("没有下一章");
             return false;
         }
 
@@ -717,11 +719,13 @@ public abstract class PageLoader {
     private void upPage() {
         if (mPageMode != PageAnimation.Mode.SCROLL) {
             mPageView.drawPage(0);
-            if (mCurPagePos > 0 || curChapter().txtChapter.getPosition() > 0) {
-                mPageView.drawPage(-1);
-            }
-            if (mCurPagePos < curChapter().txtChapter.getPageSize() - 1 || curChapter().txtChapter.getPosition() < callback.getChapterList().size() - 1) {
-                mPageView.drawPage(1);
+            if (!isAudio) {
+                if (mCurPagePos > 0 || curChapter().txtChapter.getPosition() > 0) {
+                    mPageView.drawPage(-1);
+                }
+                if (mCurPagePos < curChapter().txtChapter.getPageSize() - 1 || curChapter().txtChapter.getPosition() < callback.getChapterList().size() - 1) {
+                    mPageView.drawPage(1);
+                }
             }
         }
     }
@@ -979,6 +983,7 @@ public abstract class PageLoader {
             String tip = getStatusText(txtChapter);
             drawErrorMsg(canvas, tip, 0);
         } else {
+            if (isAudio) return;
             float top = contentMarginHeight - fontMetrics.ascent;
             if (mPageMode != PageAnimation.Mode.SCROLL) {
                 top += readBookControl.getHideStatusBar() ? mMarginTop : mPageView.getStatusBarHeight() + mMarginTop;
@@ -1481,6 +1486,7 @@ public abstract class PageLoader {
 
     private void drawErrorMsg(Canvas canvas, String msg, float offset) {
         callback.onStateChange(msg);
+        if (isAudio) return;
         Layout tempLayout = new StaticLayout(msg, mTextPaint, mVisibleWidth, Layout.Alignment.ALIGN_NORMAL, 0, 0, false);
         List<String> linesData = new ArrayList<>();
         for (int i = 0; i < tempLayout.getLineCount(); i++) {

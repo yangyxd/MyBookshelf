@@ -589,7 +589,7 @@ public class PageView extends View implements PageAnimation.OnPageChangeListener
     /**
      * 判断是否存在上一页
      */
-    private boolean hasPrevPage() {
+    public boolean hasPrevPage() {
         if (mPageLoader.hasPrev()) {
             return true;
         } else {
@@ -601,7 +601,7 @@ public class PageView extends View implements PageAnimation.OnPageChangeListener
     /**
      * 判断是否下一页存在
      */
-    private boolean hasNextPage(int pageOnCur) {
+    public boolean hasNextPage(int pageOnCur) {
         if (mPageLoader.hasNext(pageOnCur)) {
             return true;
         } else {
