@@ -97,6 +97,12 @@ type
     B1: TMenuItem;
     F2: TMenuItem;
     N14: TMenuItem;
+    CheckBox4: TCheckBox;
+    N15: TMenuItem;
+    N16: TMenuItem;
+    N17: TMenuItem;
+    N18: TMenuItem;
+    S3: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure C1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -142,6 +148,10 @@ type
     procedure B1Click(Sender: TObject);
     procedure F2Click(Sender: TObject);
     procedure N14Click(Sender: TObject);
+    procedure N15Click(Sender: TObject);
+    procedure N17Click(Sender: TObject);
+    procedure S3Click(Sender: TObject);
+    procedure N18Click(Sender: TObject);
   private
     { Private declarations }
     OldListWndProc, OldTextWndProc: TWndMethod;
@@ -159,6 +169,7 @@ type
     FFilterList: TList;
     FCurCheckIndex: Integer;
     FCheckCount: Integer;
+    FAutoFind, FAutoDel: Boolean;
 
     FWaitCheckBookSourceSingId: Integer;
 
@@ -203,7 +214,7 @@ type
     procedure CutSelectedt();
     procedure FindSource(const FindStr: string);
     procedure EditSource(Item: TBookSourceItem);
-    
+    procedure ExportSelectedToFile();
   end;
 
 var
@@ -335,11 +346,14 @@ begin
     Timer1.Enabled := True;
     ProgressBar1.Min := 0;
     ProgressBar1.Max := 100;
-    ProgressBar1.Position := 0;      
+    ProgressBar1.Position := 0;
 
-    if CheckBox1.Checked then begin
+    FAutoFind := CheckBox4.Checked;
+    FAutoDel := CheckBox1.Checked;
+
+    if FAutoDel or FAutoFind then begin
       Inc(FTaskRef);
-      Log('正在去重复...');
+      Log('正在处理...');
       Workers.Post(RemoveRePeat, Pointer(Integer(CheckBox3.Checked)));
     end;
     if CheckBox2.Checked then begin
@@ -507,6 +521,7 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
     I, J, L: Integer;
     Msg, Item, SubTitle, AURL: string;
   begin
+    Result := False;
     if Text = '' then begin
       Result := True;
       Exit;
@@ -769,6 +784,35 @@ begin
   );
 end;
 
+procedure TForm1.ExportSelectedToFile;
+var
+  FName: JSONString;
+  I: Integer;
+  Item: TBookSourceItem;
+  Items: JSONArray;
+begin
+  if SrcList.SelCount = 0 then
+    Exit;
+  if SaveDialog1.Execute(Handle) then begin
+    FName := SaveDialog1.FileName;
+    if ExtractFileExt(FName) = '' then
+      FName := FName + '.json';
+    Items := JSONArray.Create;
+    try
+      for I := 0 to SrcList.Count - 1 do begin
+        if SrcList.Selected[I] then begin
+          Item := TBookSourceItem(JSONObject(FFilterList[I]));
+          if not Assigned(Item) then Continue;
+          Items.AddChildObject.Assign(Item);
+        end;
+      end;
+      Items.SaveToFile(FName, 4, YxdStr.TTextEncoding.teUTF8, False);
+    finally
+      Items.Free;
+    end;
+  end;
+end;
+
 procedure TForm1.F2Click(Sender: TObject);
 begin
   FindSource(InputBox('查找书源', '输入要查找的关键字', ''));
@@ -915,6 +959,49 @@ end;
 procedure TForm1.N14Click(Sender: TObject);
 begin
   FindSource(FLastFindSource);
+end;
+
+procedure TForm1.N15Click(Sender: TObject);
+var
+  I: Integer;
+  GName: string;
+  Item: TBookSourceItem;
+begin
+  GName := InputBox('添加分组名称', '输入分组名称', '发现');
+  if GName = '' then Exit;
+
+  for I := 0 to SrcList.Count - 1 do begin
+    if SrcList.Selected[I] then begin
+      Item := TBookSourceItem(JSONObject(FFilterList[I]));
+      if not Assigned(Item) then Continue;
+      Item.AddGroup(GName);
+    end;
+  end;
+  NotifyListChange;
+end;
+
+procedure TForm1.N17Click(Sender: TObject);
+var
+  I: Integer;
+  GName: string;
+  Item: TBookSourceItem;
+begin
+  GName := InputBox('添加分组名称', '输入分组名称', '发现');
+  if GName = '' then Exit;
+
+  for I := 0 to SrcList.Count - 1 do begin
+    if SrcList.Selected[I] then begin
+      Item := TBookSourceItem(JSONObject(FFilterList[I]));
+      if not Assigned(Item) then Continue;
+      Item.RemoveGroup(GName);
+    end;
+  end;
+  NotifyListChange;
+end;
+
+procedure TForm1.N18Click(Sender: TObject);
+begin
+  ExportSelectedToFile;
 end;
 
 procedure TForm1.N7Click(Sender: TObject);
@@ -1082,11 +1169,21 @@ begin
     while I < FBookSrcData.Count do begin  
       Item := TBookSourceItem(FBookSrcData.O[I]);
       Inc(I);
-      
-      for J := FBookSrcData.Count - 1 downto I do begin
-        if Equals(Item, TBookSourceItem(FBookSrcData.O[J])) then
-          FBookSrcData.Remove(J);
+
+      if FAutoDel then begin
+        for J := FBookSrcData.Count - 1 downto I do begin
+          if Equals(Item, TBookSourceItem(FBookSrcData.O[J])) then
+            FBookSrcData.Remove(J);
+        end;
       end;
+
+      if FAutoFind then begin
+        if Item.ruleFindUrl <> '' then
+          Item.AddGroup('发现')
+        else
+          Item.RemoveGroup('发现');
+      end;
+
       if AJob.IsTerminated or (FWaitStop > 0) then
         Break;
       if GetTimestamp - T.STime > ST then begin
@@ -1170,6 +1267,11 @@ begin
     end
   );
   NotifyListChange(1);
+end;
+
+procedure TForm1.S3Click(Sender: TObject);
+begin
+  ExportSelectedToFile();
 end;
 
 procedure TForm1.SpeedButton1Click(Sender: TObject);
