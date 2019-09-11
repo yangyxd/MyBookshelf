@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = #38405#35835#20070#28304#25972#29702#24037#20855
-  ClientHeight = 548
+  ClientHeight = 542
   ClientWidth = 1145
   Color = 15921906
   DoubleBuffered = True
@@ -24,7 +24,7 @@ object Form1: TForm1
     Left = 313
     Top = 37
     Width = 4
-    Height = 480
+    Height = 474
     Margins.Left = 0
     Margins.Top = 37
     Margins.Right = 0
@@ -39,19 +39,20 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 313
-    Height = 517
+    Height = 511
     Align = alLeft
     BevelOuter = bvNone
     Padding.Left = 4
     Padding.Top = 4
     Padding.Bottom = 4
     TabOrder = 1
+    ExplicitHeight = 497
     object SrcList: TListBox
       AlignWithMargins = True
       Left = 4
       Top = 38
       Width = 309
-      Height = 475
+      Height = 469
       Hint = #23558#20070#28304#25991#20214#25302#20837#27492#22788
       Margins.Left = 0
       Margins.Top = 2
@@ -79,6 +80,7 @@ object Form1: TForm1
       OnData = SrcListData
       OnDblClick = SrcListDblClick
       OnKeyDown = SrcListKeyDown
+      ExplicitHeight = 455
     end
     object Panel4: TPanel
       Left = 4
@@ -125,7 +127,7 @@ object Form1: TForm1
       Left = 7
       Top = 66
       Width = 303
-      Height = 444
+      Height = 438
       Margins.Top = 30
       Align = alClient
       Alignment = taCenter
@@ -142,25 +144,23 @@ object Form1: TForm1
       PopupMenu = PopupMenu1
       TabOrder = 2
       Transparent = False
-      ExplicitLeft = 4
-      ExplicitTop = 36
-      ExplicitWidth = 309
-      ExplicitHeight = 477
+      ExplicitHeight = 424
     end
   end
   object Panel2: TPanel
     Left = 317
     Top = 0
     Width = 828
-    Height = 517
+    Height = 511
     Align = alClient
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
     TabOrder = 0
+    ExplicitHeight = 497
     object Splitter2: TSplitter
       Left = 0
-      Top = 372
+      Top = 366
       Width = 828
       Height = 4
       Cursor = crVSplit
@@ -238,7 +238,7 @@ object Form1: TForm1
       Left = 0
       Top = 36
       Width = 828
-      Height = 336
+      Height = 330
       Align = alClient
       Ctl3D = True
       ParentCtl3D = False
@@ -272,17 +272,17 @@ object Form1: TForm1
       WordWrap = True
       OnChange = EditDataChange
       FontSmoothing = fsmNone
-      ExplicitHeight = 481
+      ExplicitHeight = 316
     end
     object Panel5: TPanel
       Left = 0
-      Top = 376
+      Top = 370
       Width = 828
       Height = 141
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitLeft = 2
+      ExplicitTop = 356
       DesignSize = (
         828
         141)
@@ -359,14 +359,12 @@ object Form1: TForm1
         WordWrap = True
         OnChange = EditDataChange
         FontSmoothing = fsmClearType
-        ExplicitTop = 36
-        ExplicitHeight = 481
       end
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 523
+    Top = 517
     Width = 1145
     Height = 25
     Panels = <
@@ -376,18 +374,21 @@ object Form1: TForm1
       item
         Width = 50
       end>
+    ExplicitTop = 503
   end
   object ProgressBar1: TProgressBar
     Left = 0
-    Top = 517
+    Top = 511
     Width = 1145
     Height = 6
     Align = alBottom
     Position = 100
     TabOrder = 3
     Visible = False
+    ExplicitTop = 497
   end
   object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
     Left = 136
     Top = 192
     object C3: TMenuItem
@@ -416,6 +417,20 @@ object Form1: TForm1
     object N9: TMenuItem
       Caption = '-'
     end
+    object F2: TMenuItem
+      Caption = #26597#25214#20070#28304'(&F)...'
+      ShortCut = 16454
+      OnClick = F2Click
+    end
+    object N14: TMenuItem
+      Caption = #26597#25214#19979#19968#20010
+      ShortCut = 114
+      OnClick = N14Click
+    end
+    object B1: TMenuItem
+      Caption = #20070#28304#21517#31216#26367#25442'(&B)...'
+      OnClick = B1Click
+    end
     object H2: TMenuItem
       Caption = #20998#32452#21517#31216#26367#25442'(&H)...'
       OnClick = H2Click
@@ -423,12 +438,30 @@ object Form1: TForm1
     object N6: TMenuItem
       Caption = '-'
     end
+    object C4: TMenuItem
+      Caption = #22797#21046#20070#28304'(&C)'
+      ShortCut = 16451
+      OnClick = C4Click
+    end
+    object X2: TMenuItem
+      Caption = #21098#20999#20070#28304'(&X)'
+      ShortCut = 16472
+      OnClick = X2Click
+    end
+    object P2: TMenuItem
+      Caption = #31896#36148#20070#28304'(&P)'
+      ShortCut = 16470
+      OnClick = P2Click
+    end
     object D1: TMenuItem
-      Caption = #21024#38500#36873#20013#39033'(&D)'
+      Caption = #21024#38500#20070#28304'(&D)'
       OnClick = D1Click
     end
+    object N13: TMenuItem
+      Caption = '-'
+    end
     object C1: TMenuItem
-      Caption = #28165#31354'(&C)'
+      Caption = #28165#31354'(&L)'
       OnClick = C1Click
     end
   end

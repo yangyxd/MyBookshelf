@@ -25,18 +25,20 @@ type
 var
   frmReplaceGroup: TfrmReplaceGroup;
 
-function ShowReplaceGroup(Sender: TComponent; var FindStr, NewStr: string; var Flag: Integer): Boolean;
+function ShowReplaceGroup(Sender: TComponent; const Title: string; var FindStr, NewStr: string; var Flag: Integer): Boolean;
 
 implementation
 
 {$R *.dfm}
 
-function ShowReplaceGroup(Sender: TComponent; var FindStr, NewStr: string; var Flag: Integer): Boolean;
+function ShowReplaceGroup(Sender: TComponent; const Title: string; var FindStr, NewStr: string; var Flag: Integer): Boolean;
 var
   F: TfrmReplaceGroup;
 begin
   F := TfrmReplaceGroup.Create(Sender);
   try
+    F.Caption := Title;
+    F.CheckBox1.Enabled := Flag = 0;
     Result := F.ShowModal = mrOk;
     if Result then begin
       FindStr := Trim(F.Edit1.Text);

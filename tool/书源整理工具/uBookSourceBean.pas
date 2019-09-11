@@ -22,6 +22,7 @@ type
     procedure ReplaceGroup(const Name, NewName: string);
     function GetGroupList(): TArray<string>;
 
+    property bookSourceType: string index 28 read GetIndexValue write SetIndexValue;  // 书源类型
     property bookSourceGroup: string index 0 read GetIndexValue write SetIndexValue;  // 书源分组
     property bookSourceName: string index 1 read GetIndexValue write SetIndexValue;   // 书源名称
     property bookSourceUrl: string index 2 read GetIndexValue write SetIndexValue;    // 书源URL
@@ -61,7 +62,7 @@ implementation
 { TBookSourceItem }
 
 const
-  SKeyArray: array [0..27] of string = (
+  SKeyArray: array [0..28] of string = (
     'bookSourceGroup',
     'bookSourceName',
     'bookSourceUrl',
@@ -89,7 +90,8 @@ const
     'ruleSearchList',
     'ruleSearchName',
     'ruleSearchNoteUrl',
-    'ruleSearchUrl'
+    'ruleSearchUrl',
+    'bookSourceType'
   );
   SEnabled = 'enable';
   SSerialNumber = 'serialNumber';

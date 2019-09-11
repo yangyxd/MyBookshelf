@@ -2,7 +2,6 @@ object frmReplaceGroup: TfrmReplaceGroup
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = #26367#25442' - '#20070#28304#20998#32452
   ClientHeight = 166
   ClientWidth = 345
   Color = clWindow
@@ -66,8 +65,6 @@ object frmReplaceGroup: TfrmReplaceGroup
     Default = True
     TabOrder = 3
     OnClick = Button1Click
-    ExplicitLeft = 234
-    ExplicitTop = 176
   end
   object Button2: TButton
     Left = 151
@@ -79,7 +76,5 @@ object frmReplaceGroup: TfrmReplaceGroup
     Caption = #21462#28040'(&C)'
     ModalResult = 2
     TabOrder = 4
-    ExplicitLeft = 146
-    ExplicitTop = 176
   end
 end

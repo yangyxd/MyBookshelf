@@ -90,6 +90,13 @@ type
     N12: TMenuItem;
     OpenDialog1: TOpenDialog;
     A2: TMenuItem;
+    C4: TMenuItem;
+    X2: TMenuItem;
+    P2: TMenuItem;
+    N13: TMenuItem;
+    B1: TMenuItem;
+    F2: TMenuItem;
+    N14: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure C1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -128,10 +135,18 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure O1Click(Sender: TObject);
     procedure A2Click(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
+    procedure C4Click(Sender: TObject);
+    procedure X2Click(Sender: TObject);
+    procedure P2Click(Sender: TObject);
+    procedure B1Click(Sender: TObject);
+    procedure F2Click(Sender: TObject);
+    procedure N14Click(Sender: TObject);
   private
     { Private declarations }
     OldListWndProc, OldTextWndProc: TWndMethod;
     FBookSrcData: JSONArray;
+    FBookCopyData: JSONArray;
     FBookGroups: TStringHash;
     FIsChange, FChanging: Boolean;
     FCurIndex: Integer;
@@ -149,6 +164,8 @@ type
 
     FLocker: TCriticalSection;
     FStateMsg: string;
+    FLastSortFlag: Integer;
+    FLastFindSource: string;
 
   protected
     procedure SrcListWndProc(var Message: TMessage);
@@ -181,6 +198,10 @@ type
     procedure NotifyListChange(Flag: Integer = 0);
 
     procedure RemoveSelected();
+    procedure CopySelected();
+    procedure Paste();
+    procedure CutSelectedt();
+    procedure FindSource(const FindStr: string);
     procedure EditSource(Item: TBookSourceItem);
     
   end;
@@ -258,6 +279,25 @@ begin
   for i := 0 to DragQueryFile(ADrop, $FFFFFFFF, nil, 0) - 1 do begin
     DragQueryFile(ADrop, i, p, 1024);
     AddSrcFile(StrPas(p));
+  end;
+end;
+
+procedure TForm1.B1Click(Sender: TObject);
+var
+  FindStr, NewStr: string;
+  I, Flag: Integer;
+  Item: TBookSourceItem;
+begin
+  Flag := 1;
+  if ShowReplaceGroup(Self, '替换 - 书源名称', FindStr, NewStr, Flag) then begin
+    if (FindStr <> '') and (Flag = 0) then
+      Exit;
+    for I := 0 to FBookSrcData.Count - 1 do begin
+      Item := TBookSourceItem(FBookSrcData.O[I]);
+      if not Assigned(Item) then Continue;
+      Item.bookSourceName := StringReplace(Trim(Item.bookSourceName), FindStr, NewStr, [rfReplaceAll, rfIgnoreCase]);
+    end;
+    NotifyListChange();
   end;
 end;
 
@@ -397,6 +437,11 @@ begin
     SrcList.ItemIndex := FFilterList.Count - 1;
 end;
 
+procedure TForm1.C4Click(Sender: TObject);
+begin
+  CopySelected;
+end;
+
 function TForm1.CheckBookSourceItem(Item: TBookSourceItem; RaiseErr: Boolean; OutLog: TStrings): Boolean;
 var
   Http: THttpClient;
@@ -459,7 +504,6 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
   // 检测发现列表
   function CheckFindURL(const Text, Title: string; RaiseErr: Boolean): Boolean;
   var 
-    List: TStrings;
     I, J, L: Integer;
     Msg, Item, SubTitle, AURL: string;
   begin
@@ -513,8 +557,6 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
   end;
   
 var
-  Resp: THttpResult;
-  URL: string;
   T: Int64;
 begin
   Result := False;
@@ -563,6 +605,26 @@ begin
       S1Click(S1);
   end;
   Result := True;
+end;
+
+procedure TForm1.CopySelected;
+var
+  I: Integer;
+  Item: JSONObject;
+begin
+  FBookCopyData.Clear;
+  for I := SrcList.Count - 1 downto 0 do begin
+    if SrcList.Selected[I] then begin
+      Item := FBookCopyData.AddChildObject;
+      Item.Assign(JSONObject(FFilterList[I]));
+    end;
+  end;
+end;
+
+procedure TForm1.CutSelectedt;
+begin
+  CopySelected;
+  RemoveSelected;
 end;
 
 procedure TForm1.D1Click(Sender: TObject);
@@ -707,10 +769,40 @@ begin
   );
 end;
 
+procedure TForm1.F2Click(Sender: TObject);
+begin
+  FindSource(InputBox('查找书源', '输入要查找的关键字', ''));
+end;
+
+procedure TForm1.FindSource(const FindStr: string);
+var
+  I, J: Integer;
+  Item: TBookSourceItem;
+begin
+  if FindStr = '' then Exit;
+  FLastFindSource := FindStr;
+  J := SrcList.ItemIndex + 1;
+  if J < 0 then J := 0;
+  for I := J to SrcList.Count - 1 do begin
+    Item := TBookSourceItem(JSONObject(FFilterList[I]));
+    if not Assigned(Item) then Continue;
+    J := Pos(FindStr, Item.bookSourceName);
+    if Pos(FindStr, Item.bookSourceName) > 0 then begin
+      SrcList.ClearSelection;
+      SrcList.ItemIndex := I;
+      SrcList.Selected[I] := True;
+      SrcList.ScrollBy(0, SrcList.ItemHeight * I + 1);
+      Exit;
+    end;
+  end;
+  LogD('找不到 "' + FindStr + '" 了');
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   JsonNameAfterSpace := True;
   JsonCaseSensitive := False;
+  FBookCopyData := JSONArray.Create;
   FBookSrcData := JSONArray.Create;
   FBookGroups := TStringHash.Create(997);
   FFilterList := TList.Create;
@@ -725,6 +817,7 @@ begin
   FreeAndNil(FBookSrcData);
   FreeAndNil(FBookGroups);
   FreeAndNil(FFilterList);
+  FreeAndNil(FBookCopyData);
   FreeAndNil(FLocker);
 end;
 
@@ -742,7 +835,14 @@ begin
 end;
 
 procedure TForm1.G1Click(Sender: TObject);
+var
+  IsDX: Boolean;
 begin
+  if FLastSortFlag <> 2 then begin
+    FLastSortFlag := 2;
+    IsDX := False;
+  end else
+    IsDX := True;
   FBookSrcData.Sort(
     function (A, B: Pointer): Integer
     var
@@ -755,7 +855,10 @@ begin
       then begin
         S1 := TBookSourceItem(Item1.AsJsonObject).bookSourceGroup;
         S2 := TBookSourceItem(Item2.AsJsonObject).bookSourceGroup;
-        Result := CompareStr(S1, S2);
+        if IsDX then
+          Result := CompareStr(S2, S1)
+        else
+          Result := CompareStr(S1, S2);
       end else
         Result := 0;
     end
@@ -769,7 +872,8 @@ var
   I, Flag: Integer;
   Item: TBookSourceItem;
 begin
-  if ShowReplaceGroup(Self, FindStr, NewStr, Flag) then begin
+  Flag := 0;
+  if ShowReplaceGroup(Self, '替换 - 书源分组', FindStr, NewStr, Flag) then begin
     if (FindStr <> '') and (Flag = 0) then    
       Exit;
     for I := 0 to FBookSrcData.Count - 1 do begin
@@ -806,6 +910,11 @@ end;
 procedure TForm1.LogD(const Msg: string);
 begin
   edtLog.Lines.Add(Format('[%s] %s', [FormatDateTime('hh:mm:ss.zzz', Now), Msg]));
+end;
+
+procedure TForm1.N14Click(Sender: TObject);
+begin
+  FindSource(FLastFindSource);
 end;
 
 procedure TForm1.N7Click(Sender: TObject);
@@ -868,6 +977,31 @@ end;
 procedure TForm1.P1Click(Sender: TObject);
 begin
   EditData.PasteFromClipboard;
+end;
+
+procedure TForm1.P2Click(Sender: TObject);
+begin
+  Paste;
+end;
+
+procedure TForm1.Paste;
+var
+  I: Integer;
+begin
+  for I := 0 to FBookCopyData.Count - 1 do
+    FBookSrcData.AddChildObject.Assign(FBookCopyData.O[I]);
+  NotifyListChange();
+end;
+
+procedure TForm1.PopupMenu1Popup(Sender: TObject);
+begin
+  C4.Enabled := SrcList.SelCount > 0;
+  X2.Enabled := C4.Enabled;
+  C3.Enabled := C4.Enabled;
+  E1.Enabled := C4.Enabled;
+  D1.Enabled := C4.Enabled;
+  P2.Enabled := FBookCopyData.Count > 0;
+  N14.Enabled := FLastFindSource <> '';
 end;
 
 procedure TForm1.PopupMenu2Popup(Sender: TObject);
@@ -1007,7 +1141,14 @@ begin
 end;
 
 procedure TForm1.S2Click(Sender: TObject);
-begin             
+var
+  IsDX: Boolean;
+begin
+  if FLastSortFlag <> 1 then begin
+    FLastSortFlag := 1;
+    IsDX := False;
+  end else
+    IsDX := True;
   FBookSrcData.Sort(
     function (A, B: Pointer): Integer
     var
@@ -1020,7 +1161,10 @@ begin
       then begin
         S1 := TBookSourceItem(Item1.AsJsonObject).bookSourceName;
         S2 := TBookSourceItem(Item2.AsJsonObject).bookSourceName;
-        Result := CompareStr(S1, S2);
+        if IsDX then
+          Result := CompareStr(S2, S1)
+        else
+          Result := CompareStr(S1, S2);
       end else
         Result := 0;
     end
@@ -1103,7 +1247,6 @@ end;
 procedure TForm1.T1Click(Sender: TObject);
 var
   Item: TBookSourceItem;
-  Msg: TStrings;
 begin
   Item := TBookSourceItem(JSONObject.Create);
   try
@@ -1192,6 +1335,11 @@ procedure TForm1.X1Click(Sender: TObject);
 begin
   EditData.CopyToClipboard;
   EditData.SelText := '';
+end;
+
+procedure TForm1.X2Click(Sender: TObject);
+begin
+  CutSelectedt;
 end;
 
 procedure TForm1.Z1Click(Sender: TObject);

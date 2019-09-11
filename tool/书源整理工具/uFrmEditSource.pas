@@ -77,6 +77,8 @@ type
     Label30: TLabel;
     Edit28: TEdit;
     Button3: TButton;
+    CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -86,6 +88,8 @@ type
     procedure Button3Click(Sender: TObject);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure CheckBox2Click(Sender: TObject);
+    procedure CheckBox3Click(Sender: TObject);
   private
     { Private declarations }
     FDisableChange: Boolean;
@@ -128,6 +132,12 @@ var
   Item: TControl;
 begin
   Data.enable := CheckBox1.Checked;
+  if CheckBox2.Checked then
+    Data.bookSourceType := 'AUDIO'
+  else if CheckBox3.Checked then
+    Data.bookSourceType := 'IMAGE'
+  else
+    Data.bookSourceType := '';
   Data.weight := StrToIntDef(Edit27.Text, Data.weight);
   Data.serialNumber := StrToIntDef(Edit28.Text, Data.serialNumber);
   for I := 0 to ScrollBox1.ControlCount - 1 do begin
@@ -183,6 +193,18 @@ begin
   end;
 end;
 
+procedure TfrmEditSource.CheckBox2Click(Sender: TObject);
+begin
+  if CheckBox2.Checked then
+    CheckBox3.Checked := False;
+end;
+
+procedure TfrmEditSource.CheckBox3Click(Sender: TObject);
+begin
+  if CheckBox3.Checked then
+    CheckBox2.Checked := False;
+end;
+
 procedure TfrmEditSource.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
@@ -221,6 +243,14 @@ begin
     FDisableChange := True;
     try
       CheckBox1.Checked := Data.enable;
+      CheckBox2.Checked := False;
+      CheckBox3.Checked := False;
+
+      if Data.bookSourceType = 'AUDIO' then
+        CheckBox2.Checked := True;
+      if Data.bookSourceType = 'IMAGE' then
+        CheckBox3.Checked := True;
+
       Edit27.Text := IntToStr(Data.weight);
       Edit28.Text := IntToStr(Data.serialNumber);
       for I := 0 to ScrollBox1.ControlCount - 1 do begin

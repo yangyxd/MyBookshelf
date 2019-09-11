@@ -681,7 +681,7 @@ object frmEditSource: TfrmEditSource
       1198
       43)
     object Label29: TLabel
-      Left = 140
+      Left = 357
       Top = 19
       Width = 36
       Height = 12
@@ -694,7 +694,7 @@ object frmEditSource: TfrmEditSource
       ParentFont = False
     end
     object Label30: TLabel
-      Left = 291
+      Left = 508
       Top = 19
       Width = 48
       Height = 12
@@ -738,7 +738,7 @@ object frmEditSource: TfrmEditSource
       TabOrder = 2
     end
     object Edit27: TEdit
-      Left = 178
+      Left = 395
       Top = 14
       Width = 87
       Height = 20
@@ -750,7 +750,7 @@ object frmEditSource: TfrmEditSource
       Text = '0'
     end
     object Edit28: TEdit
-      Left = 338
+      Left = 555
       Top = 14
       Width = 87
       Height = 20
@@ -771,6 +771,24 @@ object frmEditSource: TfrmEditSource
       ModalResult = 2
       TabOrder = 5
       OnClick = Button3Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 105
+      Top = 16
+      Width = 80
+      Height = 17
+      Caption = #38899#39057#28304
+      TabOrder = 6
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 185
+      Top = 16
+      Width = 80
+      Height = 17
+      Caption = #22270#28304
+      TabOrder = 7
+      OnClick = CheckBox3Click
     end
   end
 end
