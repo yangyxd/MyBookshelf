@@ -122,6 +122,8 @@ type
     Button4: TButton;
     Button5: TButton;
     Shape1: TShape;
+    CheckBox6: TCheckBox;
+    O2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure C1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -183,6 +185,7 @@ type
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
+    procedure O2Click(Sender: TObject);
   private
     { Private declarations }
     OldListWndProc, OldTextWndProc: TWndMethod;
@@ -196,11 +199,12 @@ type
     FTaskRef: Integer;
     FTaskStartTime: Int64;
     FCheckLastTime: Int64;
+    FMaxWorkers: Integer;
 
     FFilterList: TList;
     FCurCheckIndex: Integer;
     FCheckCount, FCheckFinish: Integer;
-    FAutoFind, FAutoDel, FAllSrc: Boolean;
+    FAutoFind, FAutoDel, FAllSrc, FAutoScore: Boolean;
 
     FWaitCheckBookSourceSingId: Integer;
 
@@ -398,8 +402,8 @@ begin
     FWaitStop := 0;
     FCheckLastTime := GetTimestamp;
     FTaskStartTime := GetTimestamp;
-
-    Workers.MaxWorkers := Max(1, StrToIntDef(Edit1.Text, 8));
+    FMaxWorkers := Max(1, StrToIntDef(Edit1.Text, 8));
+    Workers.MaxWorkers := FMaxWorkers;
 
     edtLog.Lines.Clear;
     Log('正在初始化任务...');
@@ -412,6 +416,7 @@ begin
     FAutoFind := CheckBox4.Checked;
     FAutoDel := CheckBox1.Checked;
     FAllSrc := CheckBox5.Checked;
+    FAutoScore := CheckBox6.Checked;
 
     if FAutoDel or FAutoFind then begin
       Inc(FTaskRef);
@@ -556,6 +561,7 @@ begin
     end;
     Header := THttpHeaders.Create;
 
+    FAutoScore := True;
     Result := CheckBookSourceItem(Item, Http, Header, RaiseErr, OutLog);
     
   finally
@@ -586,7 +592,7 @@ begin
   if I1 < 0 then Exit;
   if I2 < 0 then Exit;
 
-  FBookSrcData.ExchangeItem(I1, I2);
+  FBookSrcData.MoveItem(I1, I2);
   FCurIndex := NIndex;
   NotifyListChange(1);
 end;
@@ -641,12 +647,12 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
         if RaiseErr then
           raise Exception.Create(Msg);
       end;
-    end else
+    end else if Assigned(OutLog) then              
       OutLog.Add('无效的' + Title + '.');
   end;
 
   // 检测发现列表
-  function CheckFindURL(const BaseURL, Text, Title: string; RaiseErr: Boolean): Boolean;
+  function CheckFindURL(AItem: TBookSourceItem; const BaseURL, Text, Title: string; RaiseErr: Boolean): Boolean;
   var 
     I, J, L: Integer;
     Msg, Item, SubTitle, AURL: string;
@@ -683,13 +689,16 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
               
         I := Pos('::', Item);
         if (Item = '') or (I < 1) then begin
+          if FAutoScore then
+            AItem.score := AItem.score - 20;
           if Assigned(OutLog) then
             OutLog.Add('发现列表格式错误');
           Continue;
         end else begin
           SubTitle := Trim(LeftStr(Item, I - 1));
           AURL := Trim(RightStr(Item, Length(Item) - I - 1));
-          CheckURL(ValidationURL(BaseURL, AURL), '发现列表项【' + SubTitle + '】');
+          if not CheckURL(ValidationURL(BaseURL, AURL), '发现列表项【' + SubTitle + '】') then
+            AItem.score := AItem.score - 1;
         end;
       end;
     except
@@ -703,12 +712,15 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
 
 var
   T: Int64;
+  AScore: Integer;
   URL: string;
 begin
   Result := False;
   if not Assigned(Item) then Exit; 
   if Item.bookSourceUrl <> '' then begin
     T := GetTimestamp;
+    if FAutoScore then
+      Item.score := 0;
     Header.Clear;
     if Item.httpUserAgent <> '' then
       Header.Add('User-Agent', Item.httpUserAgent);
@@ -716,12 +728,18 @@ begin
     // 检测书源URL
     Result := CheckURL(Trim(Item.bookSourceUrl), '书源URL', RaiseErr, True);
 
-    if Result and Assigned(OutLog) then begin
+    if Result then begin
+      if FAutoScore then
+        Item.score := Item.score + 50;
       // 检测搜索URL
       URL := Trim(Item.ruleSearchUrl);
-      CheckURL(ValidationURL(Trim(Item.bookSourceUrl), URL), '搜索地址');
+      if CheckURL(ValidationURL(Trim(Item.bookSourceUrl), URL), '搜索地址', RaiseErr) then begin
+        if FAutoScore then
+          Item.score := Item.score + 50;
+      end;
       // 检测发现列表
-      CheckFindURL(Trim(Item.bookSourceUrl), Trim(Item.ruleFindUrl), '发现', RaiseErr);
+      if FAutoScore or (Assigned(OutLog)) then
+        CheckFindURL(Item, Trim(Item.bookSourceUrl), Trim(Item.ruleFindUrl), '发现', RaiseErr);
     end;
 
     if Assigned(OutLog) then
@@ -806,6 +824,7 @@ begin
     Http := THttpClient.Create(nil);
     Http.ConnectionTimeOut := 30000;
     Http.RecvTimeOut := 30000;
+    Http.AllowCookies := False;
     Header := THttpHeaders.Create;
     
     while (not AJob.IsTerminated) and (FWaitStop = 0) do begin
@@ -817,7 +836,7 @@ begin
         New(State);
         State.Min := 0;
         State.Max := FCheckCount;
-        State.Value := V;
+        State.Value := FCheckFinish;
         Workers.Post(DoUpdateProcess, State, True);
         Sleep(10);
       end;
@@ -855,6 +874,19 @@ begin
       while not AJob.IsTerminated do begin
         if (FCheckFinish >= FCheckCount) or (FWaitStop > 0) then
           Break;
+
+        FLocker.Enter;
+        if (GetTimestamp - FCheckLastTime) > 1000 then begin
+          FCheckLastTime := GetTimestamp;
+          New(State);
+          State.Min := 0;
+          State.Max := FCheckCount;
+          State.Value := FCheckFinish;
+          Workers.Post(DoUpdateProcess, State, True);
+          Sleep(10);
+        end;
+        FLocker.Leave;
+
         Sleep(100);
       end;
       Workers.Post(TaskFinish, nil, True);
@@ -1221,6 +1253,35 @@ begin
   end;
 end;
 
+procedure TForm1.O2Click(Sender: TObject);
+var
+  IsDX: Boolean;
+begin
+  if FLastSortFlag <> 4 then begin
+    FLastSortFlag := 4;
+    IsDX := False;
+  end else
+    IsDX := True;
+  FBookSrcData.Sort(
+    function (A, B: Pointer): Integer
+    var
+      Item1: PJSONValue absolute A;
+      Item2: PJSONValue absolute B;
+    begin
+      if (Item1.FType = Item2.FType) and (Item1.FType = jdtObject) and
+        (Item1.AsJsonObject <> nil) and (Item2.AsJsonObject <> nil)
+      then begin
+        if IsDX then
+          Result := TBookSourceItem(Item1.AsJsonObject).score - TBookSourceItem(Item2.AsJsonObject).score
+        else
+          Result := TBookSourceItem(Item2.AsJsonObject).score - TBookSourceItem(Item1.AsJsonObject).score;
+      end else
+        Result := 0;
+    end
+  );
+  NotifyListChange(1);
+end;
+
 procedure TForm1.P1Click(Sender: TObject);
 begin
   EditData.PasteFromClipboard;
@@ -1551,6 +1612,7 @@ begin
       LogD('恭喜, 检测通过!')
     else
       LogD('书源异常!');
+    EditData.Text := Item.ToString(4);
   finally
     FreeAndNil(Item);
   end;
@@ -1637,7 +1699,6 @@ begin
     var
       Item1: PJSONValue absolute A;
       Item2: PJSONValue absolute B;
-      S1, S2: string;
     begin
       if (Item1.FType = Item2.FType) and (Item1.FType = jdtObject) and
         (Item1.AsJsonObject <> nil) and (Item2.AsJsonObject <> nil)
@@ -1661,7 +1722,7 @@ begin
     FCheckCount := FBookSrcData.Count;
     FCurCheckIndex := 0;
     FCheckFinish := 0;
-    J := Min(FBookSrcData.Count, Workers.MaxWorkers - 1);
+    J := Min(FBookSrcData.Count, FMaxWorkers);
     for I := 0 to J - 1 do begin
       if AJob.IsTerminated then
         Break;

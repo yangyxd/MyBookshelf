@@ -18,6 +18,8 @@ type
     procedure SetWeight(const Value: Integer);
     function GetLastUpdateTime: Int64;
     procedure SetLastUpdateTime(const Value: Int64);
+    function GetScore: Integer;
+    procedure SetScore(const Value: Integer);
   public
     procedure AddGroup(const Name: string);
     procedure RemoveGroup(const Name: string);
@@ -58,6 +60,7 @@ type
     property enable: Boolean read GetEnable write SetEnable;
     property serialNumber: Integer read GetSerialNumber write SetSerialNumber;
     property weight: Integer read GetWeight write SetWeight;
+    property score: Integer read GetScore write SetScore;  // ÆÀ·Ö
   end;
 
 implementation
@@ -142,6 +145,11 @@ begin
   Result := Self.I['lastUpdateTime'];
 end;
 
+function TBookSourceItem.GetScore: Integer;
+begin
+  Result := Self.I['score'];
+end;
+
 function TBookSourceItem.GetSerialNumber: Integer;
 begin
   Result := Self.I[SSerialNumber];
@@ -219,6 +227,11 @@ end;
 procedure TBookSourceItem.SetLastUpdateTime(const Value: Int64);
 begin
   Self.I['lastUpdateTime'] := Value;
+end;
+
+procedure TBookSourceItem.SetScore(const Value: Integer);
+begin
+  Self.I['score'] := Value;
 end;
 
 procedure TBookSourceItem.SetSerialNumber(const Value: Integer);
