@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = #38405#35835#20070#28304#25972#29702#24037#20855
-  ClientHeight = 522
+  ClientHeight = 482
   ClientWidth = 1145
   Color = 15921906
   DoubleBuffered = True
@@ -22,24 +22,23 @@ object Form1: TForm1
   object Splitter1: TSplitter
     AlignWithMargins = True
     Left = 313
-    Top = 37
+    Top = 0
     Width = 4
-    Height = 454
+    Height = 451
     Margins.Left = 0
-    Margins.Top = 37
+    Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
     Color = clSilver
     ParentColor = False
     ExplicitLeft = 257
-    ExplicitTop = 0
     ExplicitHeight = 697
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 313
-    Height = 491
+    Height = 451
     Align = alLeft
     BevelOuter = bvNone
     Padding.Left = 4
@@ -49,9 +48,9 @@ object Form1: TForm1
     object SrcList: TListBox
       AlignWithMargins = True
       Left = 4
-      Top = 38
+      Top = 59
       Width = 309
-      Height = 449
+      Height = 388
       Hint = #23558#20070#28304#25991#20214#25302#20837#27492#22788
       Margins.Left = 0
       Margins.Top = 2
@@ -84,7 +83,7 @@ object Form1: TForm1
       Left = 4
       Top = 4
       Width = 309
-      Height = 32
+      Height = 53
       Align = alTop
       BevelOuter = bvNone
       DoubleBuffered = True
@@ -92,7 +91,7 @@ object Form1: TForm1
       TabOrder = 1
       DesignSize = (
         309
-        32)
+        53)
       object lbCount: TLabel
         Left = 0
         Top = 7
@@ -119,13 +118,51 @@ object Form1: TForm1
         OnChange = bookGroupListChange
         OnClick = bookGroupListChange
       end
+      object RadioButton1: TRadioButton
+        Left = 3
+        Top = 30
+        Width = 57
+        Height = 17
+        Caption = #20840#37096
+        Checked = True
+        TabOrder = 1
+        TabStop = True
+        OnClick = RadioButton1Click
+      end
+      object RadioButton2: TRadioButton
+        Left = 59
+        Top = 30
+        Width = 57
+        Height = 17
+        Caption = #25991#26412
+        TabOrder = 2
+        OnClick = RadioButton2Click
+      end
+      object RadioButton3: TRadioButton
+        Left = 122
+        Top = 29
+        Width = 57
+        Height = 20
+        Caption = #38899#39057
+        TabOrder = 3
+        OnClick = RadioButton3Click
+      end
+      object RadioButton4: TRadioButton
+        Left = 182
+        Top = 29
+        Width = 57
+        Height = 20
+        Caption = #22270#28304
+        TabOrder = 4
+        OnClick = RadioButton4Click
+      end
     end
     object StaticText1: TStaticText
       AlignWithMargins = True
       Left = 7
-      Top = 66
+      Top = 87
       Width = 303
-      Height = 418
+      Height = 357
       Margins.Top = 30
       Align = alClient
       Alignment = taCenter
@@ -148,7 +185,7 @@ object Form1: TForm1
     Left = 317
     Top = 0
     Width = 828
-    Height = 491
+    Height = 451
     Align = alClient
     BevelOuter = bvNone
     ParentBackground = False
@@ -156,7 +193,7 @@ object Form1: TForm1
     TabOrder = 0
     object Splitter2: TSplitter
       Left = 0
-      Top = 346
+      Top = 306
       Width = 828
       Height = 4
       Cursor = crVSplit
@@ -242,12 +279,25 @@ object Form1: TForm1
         State = cbChecked
         TabOrder = 5
       end
+      object CheckBox5: TCheckBox
+        Left = 605
+        Top = 9
+        Width = 116
+        Height = 17
+        Hint = #36873#20013#26102#22788#29702#25152#26377#20070#28304'('#21253#25324#34987#36807#28388#25481#30340#20070#28304'),'#19981#36873#20013#21482#22788#29702#24403#21069#36807#28388#21518#30340#20070#28304
+        Caption = #22788#29702#25152#26377#21015#34920#39033
+        Checked = True
+        ParentShowHint = False
+        ShowHint = True
+        State = cbChecked
+        TabOrder = 6
+      end
     end
     object EditData: TSynMemo
       Left = 0
       Top = 36
       Width = 828
-      Height = 310
+      Height = 270
       Align = alClient
       Ctl3D = True
       ParentCtl3D = False
@@ -284,7 +334,7 @@ object Form1: TForm1
     end
     object Panel5: TPanel
       Left = 0
-      Top = 350
+      Top = 310
       Width = 828
       Height = 141
       Align = alBottom
@@ -371,7 +421,7 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 497
+    Top = 457
     Width = 1145
     Height = 25
     Panels = <
@@ -384,7 +434,7 @@ object Form1: TForm1
   end
   object ProgressBar1: TProgressBar
     Left = 0
-    Top = 491
+    Top = 451
     Width = 1145
     Height = 6
     Align = alBottom
@@ -439,6 +489,10 @@ object Form1: TForm1
     object B1: TMenuItem
       Caption = #20070#28304#21517#31216#26367#25442'(&B)...'
       OnClick = B1Click
+    end
+    object B2: TMenuItem
+      Caption = #20070#28304'URL'#26367#25442'(&U)...'
+      OnClick = B2Click
     end
     object H2: TMenuItem
       Caption = #20998#32452#21517#31216#26367#25442'(&H)...'
@@ -586,9 +640,25 @@ object Form1: TForm1
     end
     object E3: TMenuItem
       Caption = #32534#36753'(&E)'
+      object B3: TMenuItem
+        Caption = #20070#28304#21517#31216#26367#25442'(&B)...'
+        OnClick = B1Click
+      end
+      object URLU1: TMenuItem
+        Caption = #20070#28304'URL'#26367#25442'(&U)...'
+        OnClick = B2Click
+      end
       object H3: TMenuItem
         Caption = #20998#32452#21517#31216#26367#25442'(&H)...'
         OnClick = H2Click
+      end
+      object N19: TMenuItem
+        Caption = '-'
+      end
+      object URL1: TMenuItem
+        Caption = #26597#25214#20070#28304': '#25628#32034#20070#28304'URL'
+        Checked = True
+        OnClick = URL1Click
       end
     end
     object H1: TMenuItem

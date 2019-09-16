@@ -103,6 +103,16 @@ type
     N17: TMenuItem;
     N18: TMenuItem;
     S3: TMenuItem;
+    B2: TMenuItem;
+    B3: TMenuItem;
+    URLU1: TMenuItem;
+    N19: TMenuItem;
+    URL1: TMenuItem;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
+    CheckBox5: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure C1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -152,6 +162,12 @@ type
     procedure N17Click(Sender: TObject);
     procedure S3Click(Sender: TObject);
     procedure N18Click(Sender: TObject);
+    procedure B2Click(Sender: TObject);
+    procedure URL1Click(Sender: TObject);
+    procedure RadioButton1Click(Sender: TObject);
+    procedure RadioButton2Click(Sender: TObject);
+    procedure RadioButton3Click(Sender: TObject);
+    procedure RadioButton4Click(Sender: TObject);
   private
     { Private declarations }
     OldListWndProc, OldTextWndProc: TWndMethod;
@@ -168,8 +184,8 @@ type
 
     FFilterList: TList;
     FCurCheckIndex: Integer;
-    FCheckCount: Integer;
-    FAutoFind, FAutoDel: Boolean;
+    FCheckCount, FCheckFinish: Integer;
+    FAutoFind, FAutoDel, FAllSrc: Boolean;
 
     FWaitCheckBookSourceSingId: Integer;
 
@@ -177,6 +193,8 @@ type
     FStateMsg: string;
     FLastSortFlag: Integer;
     FLastFindSource: string;
+    FBookType: string;
+    procedure SetBookType(const Value: string);
 
   protected
     procedure SrcListWndProc(var Message: TMessage);
@@ -215,6 +233,8 @@ type
     procedure FindSource(const FindStr: string);
     procedure EditSource(Item: TBookSourceItem);
     procedure ExportSelectedToFile();
+
+    property BookType: string read FBookType write SetBookType;
   end;
 
 var
@@ -312,6 +332,25 @@ begin
   end;
 end;
 
+procedure TForm1.B2Click(Sender: TObject);
+var
+  FindStr, NewStr: string;
+  I, Flag: Integer;
+  Item: TBookSourceItem;
+begin
+  Flag := 1;
+  if ShowReplaceGroup(Self, '替换 - 书源URL', FindStr, NewStr, Flag) then begin
+    if (FindStr <> '') and (Flag = 0) then
+      Exit;
+    for I := 0 to FBookSrcData.Count - 1 do begin
+      Item := TBookSourceItem(FBookSrcData.O[I]);
+      if not Assigned(Item) then Continue;
+      Item.bookSourceUrl := StringReplace(Trim(Item.bookSourceUrl), FindStr, NewStr, [rfReplaceAll, rfIgnoreCase]);
+    end;
+    NotifyListChange();
+  end;
+end;
+
 procedure TForm1.bookGroupListChange(Sender: TObject);
 begin
   if FChanging then
@@ -350,6 +389,7 @@ begin
 
     FAutoFind := CheckBox4.Checked;
     FAutoDel := CheckBox1.Checked;
+    FAllSrc := CheckBox5.Checked;
 
     if FAutoDel or FAutoFind then begin
       Inc(FTaskRef);
@@ -485,6 +525,27 @@ end;
 function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
   Header: THttpHeaders; RaiseErr: Boolean; OutLog: TStrings): Boolean;
 
+  function ValidationURL(const BaseURL, URL: string): string;
+  begin
+    if (BaseURL <> '') and (BaseURL <> '-') and (URL <> '-') and (Pos('://', URL) < 1) then begin
+      if URL = '' then
+        Result := BaseURL
+      else if URL[1] = '/' then begin
+        if BaseURL[Length(BaseURL)] = '/' then
+          Result := BaseURL + URL.Substring(2)
+        else
+          Result := BaseURL + URL
+      end else begin
+        if BaseURL[Length(BaseURL)] = '/' then
+          Result := BaseURL + URL
+        else
+          Result := BaseURL + '/' + URL;
+      end;
+    end else
+      Result := URL;
+    Result := StringReplace(Result, '=searchPage', '=1', [rfReplaceAll, rfIgnoreCase]);
+  end;
+
   function CheckURL(const URL, Title: string; RaiseErr: Boolean = False; Try404: Boolean = False): Boolean;
   var
     Resp: THttpResult;
@@ -494,7 +555,7 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
     if Result then begin
       try
         Resp := Http.Get(UrlEncodeEx(URL), nil, Header);
-        if (Resp.StatusCode = 200) or (Try404 and (Resp.StatusCode = 404)) then begin       
+        if (Resp.StatusCode = 200) or (Try404 and (Resp.StatusCode >= 400) and (Resp.StatusCode < 500)) then begin
           Result := True;
           if Assigned(OutLog) then OutLog.Add(Title + '连接成功.');
         end else begin
@@ -516,7 +577,7 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
   end;
 
   // 检测发现列表
-  function CheckFindURL(const Text, Title: string; RaiseErr: Boolean): Boolean;
+  function CheckFindURL(const BaseURL, Text, Title: string; RaiseErr: Boolean): Boolean;
   var 
     I, J, L: Integer;
     Msg, Item, SubTitle, AURL: string;
@@ -559,7 +620,7 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
         end else begin
           SubTitle := Trim(LeftStr(Item, I - 1));
           AURL := Trim(RightStr(Item, Length(Item) - I - 1));
-          CheckURL(AURL, '发现列表项【' + SubTitle + '】');   
+          CheckURL(ValidationURL(BaseURL, AURL), '发现列表项【' + SubTitle + '】');
         end;
       end;
     except
@@ -570,9 +631,10 @@ function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
         raise Exception.Create(Msg);
     end;
   end;
-  
+
 var
   T: Int64;
+  URL: string;
 begin
   Result := False;
   if not Assigned(Item) then Exit; 
@@ -587,9 +649,10 @@ begin
 
     if Result and Assigned(OutLog) then begin
       // 检测搜索URL
-      CheckURL(Trim(Item.ruleSearchUrl), '搜索地址');
+      URL := Trim(Item.ruleSearchUrl);
+      CheckURL(ValidationURL(Trim(Item.bookSourceUrl), URL), '搜索地址');
       // 检测发现列表
-      CheckFindURL(Trim(Item.ruleFindUrl), '发现', RaiseErr);
+      CheckFindURL(Trim(Item.bookSourceUrl), Trim(Item.ruleFindUrl), '发现', RaiseErr);
     end;
 
     if Assigned(OutLog) then
@@ -695,23 +758,36 @@ begin
         Item := TBookSourceItem(FBookSrcData.O[V]);
         if not Assigned(Item) then Exit;
 
-        try
-          IsOK := CheckBookSourceItem(Item, Http, Header);
-        except
-          IsOK := False;
+        if (FAllSrc) or (FFilterList.IndexOf(Item) >= 0) then begin
+
+          try
+            IsOK := CheckBookSourceItem(Item, Http, Header);
+          except
+            IsOK := False;
+          end;
+
+          if IsOK then
+            Item.RemoveGroup('失效')
+          else
+            Item.AddGroup('失效');
+
+          Sleep(50);
         end;
-        
-        if IsOK then
-          Item.RemoveGroup('失效')
-        else
-          Item.AddGroup('失效');   
+
+        AtomicIncrement(FCheckFinish);
       end else
         Break;
+
     end;
   finally
 
-    if (V >= FCheckCount) or (FWaitStop > 0) then begin
+    if (V = FCheckCount) or (FWaitStop > 0) then begin
       Sleep(100);
+      while not AJob.IsTerminated do begin
+        if (FCheckFinish >= FCheckCount) or (FWaitStop > 0) then
+          Break;
+        Sleep(100);
+      end;
       Workers.Post(TaskFinish, nil, True);
     end;
 
@@ -831,7 +907,7 @@ begin
     Item := TBookSourceItem(JSONObject(FFilterList[I]));
     if not Assigned(Item) then Continue;
     J := Pos(FindStr, Item.bookSourceName);
-    if Pos(FindStr, Item.bookSourceName) > 0 then begin
+    if (Pos(FindStr, Item.bookSourceName) > 0) or (URL1.Checked and (Pos(FindStr, Item.bookSourceUrl) > 0)) then begin
       SrcList.ClearSelection;
       SrcList.ItemIndex := I;
       SrcList.Selected[I] := True;
@@ -1017,6 +1093,13 @@ var
   I, J: Integer;
   Key: string;
   Item: TBookSourceItem;
+
+  function EqualsBookType(const ABookType: string): Boolean;
+  begin
+    Result := (FBookType = '') or (FBookType = UpperCase(ABookType)) or
+      ((FBookType = 'TEXT') and (ABookType = ''));
+  end;
+
 begin
   J := FCurIndex;
   
@@ -1024,20 +1107,27 @@ begin
     for I := 0 to FBookSrcData.Count - 1 do
       UpdateBookGroup(TBookSourceItem(FBookSrcData.O[I])); 
     bookGroupList.Items.Clear;
+    bookGroupList.Items.Add('发现');
+    bookGroupList.Items.Add('失效');
     FBookGroups.GetKeyList(bookGroupList.Items);
   end;   
 
   FFilterList.Clear;
   Key := LowerCase(bookGroupList.Text);
-  if Key <> '' then begin  
+  if Key <> '' then begin
     for I := 0 to FBookSrcData.Count - 1 do begin
       Item := TBookSourceItem(FBookSrcData.O[I]);
-      if (Pos(Key, Item.bookSourceGroup) > 0) or (Pos(Key, Item.bookSourceName) > 0) then
-        FFilterList.Add(Item);      
+      if EqualsBookType(Item.bookSourceType) then begin
+        if (Pos(Key, Item.bookSourceGroup) > 0) or (Pos(Key, Item.bookSourceName) > 0) then
+          FFilterList.Add(Item);
+      end;
     end;
   end else begin
-    for I := 0 to FBookSrcData.Count - 1 do 
-      FFilterList.Add(FBookSrcData.O[I]);  
+    for I := 0 to FBookSrcData.Count - 1 do begin
+      Item := TBookSourceItem(FBookSrcData.O[I]);
+      if EqualsBookType(Item.bookSourceType) then
+        FFilterList.Add(Item);
+    end;
   end;
   
   SrcList.Count := FFilterList.Count;
@@ -1112,6 +1202,26 @@ begin
   ShellExecute(0, 'OPEN', PChar('https://github.com/yangyxd/MyBookshelf'), nil, nil, SW_SHOWMAXIMIZED)
 end;
 
+procedure TForm1.RadioButton1Click(Sender: TObject);
+begin
+  BookType := '';
+end;
+
+procedure TForm1.RadioButton2Click(Sender: TObject);
+begin
+  BookType := 'TEXT';
+end;
+
+procedure TForm1.RadioButton3Click(Sender: TObject);
+begin
+  BookType := 'AUDIO';
+end;
+
+procedure TForm1.RadioButton4Click(Sender: TObject);
+begin
+  BookType := 'IMAGE';
+end;
+
 procedure TForm1.RemoveRepeat(AJob: PJob);
 var
   CheckName: Boolean;
@@ -1155,6 +1265,7 @@ var
   Item: TBookSourceItem;
   T: TProcessState;
   State: PProcessState;
+  List: TList;
 begin
   I := 0;
   LastCount := FBookSrcData.Count;
@@ -1164,11 +1275,15 @@ begin
   T.Min := 0;
   T.Value := 0;
   ST := 1000;
-  
+
   try
-    while I < FBookSrcData.Count do begin  
+
+    while I < FBookSrcData.Count do begin
       Item := TBookSourceItem(FBookSrcData.O[I]);
       Inc(I);
+
+      if (not FAllSrc) and (FFilterList.IndexOf(Item) < 0) then
+        Continue;
 
       if FAutoDel then begin
         for J := FBookSrcData.Count - 1 downto I do begin
@@ -1196,6 +1311,7 @@ begin
         Workers.Post(DoUpdateProcess, State, True);
       end;
     end;
+
   finally  
     if LastCount <> FBookSrcData.Count then
       Workers.Post(DoNotifyDataChange, nil, True);
@@ -1272,6 +1388,14 @@ end;
 procedure TForm1.S3Click(Sender: TObject);
 begin
   ExportSelectedToFile();
+end;
+
+procedure TForm1.SetBookType(const Value: string);
+begin
+  if UpperCase(FBookType) <> UpperCase(Value) then begin
+    FBookType := UpperCase(Value);
+    NotifyListChange();
+  end;
 end;
 
 procedure TForm1.SpeedButton1Click(Sender: TObject);
@@ -1401,6 +1525,11 @@ begin
   end;
 end;
 
+procedure TForm1.URL1Click(Sender: TObject);
+begin
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
+end;
+
 procedure TForm1.W1Click(Sender: TObject);
 begin
   EditData.WordWrap := not W1.Checked;
@@ -1418,6 +1547,7 @@ begin
   if FBookSrcData.Count > 0 then begin
     FCheckCount := FBookSrcData.Count;
     FCurCheckIndex := 0;
+    FCheckFinish := 0;
     J := Min(FBookSrcData.Count, Workers.MaxWorkers - 1);
     for I := 0 to J - 1 do begin
       if AJob.IsTerminated then
