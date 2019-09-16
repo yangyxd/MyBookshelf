@@ -1062,8 +1062,10 @@ begin
   if FLastSortFlag <> 2 then begin
     FLastSortFlag := 2;
     IsDX := False;
-  end else
+  end else begin
     IsDX := True;
+    FLastSortFlag := 0;
+  end;
   FBookSrcData.Sort(
     function (A, B: Pointer): Integer
     var
@@ -1260,8 +1262,10 @@ begin
   if FLastSortFlag <> 4 then begin
     FLastSortFlag := 4;
     IsDX := False;
-  end else
+  end else begin
     IsDX := True;
+    FLastSortFlag := 0;
+  end;
   FBookSrcData.Sort(
     function (A, B: Pointer): Integer
     var
@@ -1491,8 +1495,10 @@ begin
   if FLastSortFlag <> 1 then begin
     FLastSortFlag := 1;
     IsDX := False;
-  end else
+  end else begin
     IsDX := True;
+    FLastSortFlag := 0;
+  end;
   FBookSrcData.Sort(
     function (A, B: Pointer): Integer
     var
@@ -1692,8 +1698,10 @@ begin
   if FLastSortFlag <> 3 then begin
     FLastSortFlag := 3;
     IsDX := False;
-  end else
+  end else begin
     IsDX := True;
+    FLastSortFlag := 0;
+  end;
   FBookSrcData.Sort(
     function (A, B: Pointer): Integer
     var
