@@ -3,7 +3,7 @@ unit uFrmMain;
 interface
 
 uses
-  iocp.Http.Client, iocp.Utils.Str,
+  iocp.Http.Client, iocp.Utils.Str, DateUtils,
   YxdJson, YxdStr, YxdHash, YxdWorker, ShellAPI, Math, StrUtils,
   uBookSourceBean,
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
@@ -113,6 +113,15 @@ type
     RadioButton3: TRadioButton;
     RadioButton4: TRadioButton;
     CheckBox5: TCheckBox;
+    N20: TMenuItem;
+    U1: TMenuItem;
+    W3: TMenuItem;
+    Panel6: TPanel;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Shape1: TShape;
     procedure FormCreate(Sender: TObject);
     procedure C1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -168,6 +177,12 @@ type
     procedure RadioButton2Click(Sender: TObject);
     procedure RadioButton3Click(Sender: TObject);
     procedure RadioButton4Click(Sender: TObject);
+    procedure U1Click(Sender: TObject);
+    procedure W3Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     { Private declarations }
     OldListWndProc, OldTextWndProc: TWndMethod;
@@ -234,6 +249,8 @@ type
     procedure EditSource(Item: TBookSourceItem);
     procedure ExportSelectedToFile();
 
+    procedure ChangeItemIndex(const CurIndex, NewIndex: Integer);
+
     property BookType: string read FBookType write SetBookType;
   end;
 
@@ -246,6 +263,11 @@ implementation
 
 uses
   uFrmWait, uFrmEditSource, uFrmReplaceGroup;
+
+function GetCurJavaDateTime(): Int64;
+begin
+   Result := Round(((Now - 25569) * 86400000 - 3600000 * 8) / 1000);
+end;
 
 procedure CutOrCopyFiles(FileList: AnsiString; bCopy: Boolean);
 type
@@ -422,6 +444,26 @@ begin
   //Application.ProcessMessages;
 end;
 
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  ChangeItemIndex(SrcList.ItemIndex, 0);
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  ChangeItemIndex(SrcList.ItemIndex, SrcList.ItemIndex - 1);
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  ChangeItemIndex(SrcList.ItemIndex, SrcList.ItemIndex + 1);
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  ChangeItemIndex(SrcList.ItemIndex, SrcList.Count - 1);
+end;
+
 procedure TForm1.A1Click(Sender: TObject);
 begin
   EditData.SelectAll;
@@ -520,6 +562,33 @@ begin
     FreeAndNil(Http);
     FreeAndNil(Header);
   end;
+end;
+
+procedure TForm1.ChangeItemIndex(const CurIndex, NewIndex: Integer);
+var
+  Item1, Item2: TBookSourceItem;
+  I1, I2, NIndex: Integer;
+begin
+  if CurIndex < 0 then Exit;
+  if SrcList.Count <= 1 then Exit;
+  NIndex := NewIndex;
+  if NIndex >= SrcList.Count then
+    NIndex := SrcList.Count - 1;
+  if NIndex < 0 then Exit;
+  if NIndex = CurIndex then Exit;
+
+  Item1 := TBookSourceItem(FFilterList[CurIndex]);
+  Item2 := TBookSourceItem(FFilterList[NIndex]);
+
+  I1 := FBookSrcData.IndexOfObject(Item1);
+  I2 := FBookSrcData.IndexOfObject(Item2);
+
+  if I1 < 0 then Exit;
+  if I2 < 0 then Exit;
+
+  FBookSrcData.ExchangeItem(I1, I2);
+  FCurIndex := NIndex;
+  NotifyListChange(1);
 end;
 
 function TForm1.CheckBookSourceItem(Item: TBookSourceItem; Http: THttpClient;
@@ -970,8 +1039,8 @@ begin
       Item2: PJSONValue absolute B;
       S1, S2: string;
     begin
-      if (Item1.FType = Item2.FType) and (Item1.FType = jdtObject) and 
-        (Item1.AsJsonObject <> nil) and (Item2.AsJsonObject <> nil) 
+      if (Item1.FType = Item2.FType) and (Item1.FType = jdtObject) and
+        (Item1.AsJsonObject <> nil) and (Item2.AsJsonObject <> nil)
       then begin
         S1 := TBookSourceItem(Item1.AsJsonObject).bookSourceGroup;
         S2 := TBookSourceItem(Item2.AsJsonObject).bookSourceGroup;
@@ -1136,6 +1205,7 @@ begin
     SrcList.ClearSelection;
     SrcList.ItemIndex := J;
     SrcList.Selected[J] := True;
+    SrcListClick(SrcList);
   end;
   
   SrcList.ShowHint := SrcList.Count = 0;
@@ -1507,6 +1577,19 @@ begin
   DispLog;
 end;
 
+procedure TForm1.U1Click(Sender: TObject);
+var
+  Item: TBookSourceItem;
+begin
+  Item := TBookSourceItem(JSONObject.Create);
+  try
+    Item.Parse(EditData.Text);
+    Item.lastUpdateTime := GetCurJavaDateTime;
+  finally
+    FreeAndNil(Item);
+  end;
+end;
+
 procedure TForm1.UpdateBookGroup(Item: TBookSourceItem);
 var
   J: Integer;   
@@ -1538,6 +1621,36 @@ end;
 procedure TForm1.W2Click(Sender: TObject);
 begin
   ShellExecute(0, 'OPEN', PChar('http://www.cnblogs.com/yangyxd/'), nil, nil, SW_SHOWMAXIMIZED)
+end;
+
+procedure TForm1.W3Click(Sender: TObject);
+var
+  IsDX: Boolean;
+begin
+  if FLastSortFlag <> 3 then begin
+    FLastSortFlag := 3;
+    IsDX := False;
+  end else
+    IsDX := True;
+  FBookSrcData.Sort(
+    function (A, B: Pointer): Integer
+    var
+      Item1: PJSONValue absolute A;
+      Item2: PJSONValue absolute B;
+      S1, S2: string;
+    begin
+      if (Item1.FType = Item2.FType) and (Item1.FType = jdtObject) and
+        (Item1.AsJsonObject <> nil) and (Item2.AsJsonObject <> nil)
+      then begin
+        if IsDX then
+          Result := TBookSourceItem(Item1.AsJsonObject).weight - TBookSourceItem(Item2.AsJsonObject).weight
+        else
+          Result := TBookSourceItem(Item2.AsJsonObject).weight - TBookSourceItem(Item1.AsJsonObject).weight;
+      end else
+        Result := 0;
+    end
+  );
+  NotifyListChange(1);
 end;
 
 procedure TForm1.WaitCheckBookSource(AJob: PJob);

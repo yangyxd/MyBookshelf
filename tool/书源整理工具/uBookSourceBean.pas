@@ -16,6 +16,8 @@ type
     procedure SetEnable(const Value: Boolean);
     procedure SetSerialNumber(const Value: Integer);
     procedure SetWeight(const Value: Integer);
+    function GetLastUpdateTime: Int64;
+    procedure SetLastUpdateTime(const Value: Int64);
   public
     procedure AddGroup(const Name: string);
     procedure RemoveGroup(const Name: string);
@@ -52,6 +54,7 @@ type
     property ruleSearchNoteUrl: string index 26 read GetIndexValue write SetIndexValue;  // 搜索结果书籍URL规则
     property ruleSearchUrl: string index 27 read GetIndexValue write SetIndexValue;    // 搜索规地址
 
+    property lastUpdateTime: Int64 read GetLastUpdateTime write SetLastUpdateTime;  // 最后更新时间
     property enable: Boolean read GetEnable write SetEnable;
     property serialNumber: Integer read GetSerialNumber write SetSerialNumber;
     property weight: Integer read GetWeight write SetWeight;
@@ -134,6 +137,11 @@ begin
   Result := Self.S[SKeyArray[Index]];
 end;
 
+function TBookSourceItem.GetLastUpdateTime: Int64;
+begin
+  Result := Self.I['lastUpdateTime'];
+end;
+
 function TBookSourceItem.GetSerialNumber: Integer;
 begin
   Result := Self.I[SSerialNumber];
@@ -206,6 +214,11 @@ procedure TBookSourceItem.SetIndexValue(const Index: Integer;
   const Value: string);
 begin
   Self.S[SKeyArray[Index]] := Value;
+end;
+
+procedure TBookSourceItem.SetLastUpdateTime(const Value: Int64);
+begin
+  Self.I['lastUpdateTime'] := Value;
 end;
 
 procedure TBookSourceItem.SetSerialNumber(const Value: Integer);
